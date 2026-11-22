@@ -170,15 +170,65 @@ function recQ1(){let arr=getUsers();let u=arr.find(x=>x.user===val('rec-user'));
 function recQ2(){let u=window._rec;if(!u)return;if(val('rec-ans').toLowerCase().trim()!==u.a.toLowerCase().trim()){alert('Respuesta secreta incorrecta');return}let arr=getUsers();let idx=arr.findIndex(x=>x.user===u.user);arr[idx].pass=val('rec-new');saveUsers(arr);alert('Contraseña cambiada. Inicia sesión con la nueva.');show('p-login')}
 function recEmail(){let e=val('rec-email');let arr=getUsers();let u=arr.find(x=>x.email===e);if(!u){document.getElementById('rec-email-msg').innerText='Ese email no está registrado.';return}document.getElementById('rec-email-msg').innerText='Demo: te enviamos un link / código a '+e+' para cambiar tu contraseña.'}
 function openMod(m){if(m==='asesoria')show('p-asesoria');if(m==='tecnica')show('p-tecnica');if(m==='cotiza')show('p-cotiza');if(m==='socios')show('p-socios');if(m==='transporte')show('p-transporte')}
-async function cargarArancel(){if(arancel.length)return;try{let r=await fetch(ARCHIVO_ARANCEL);let b=await r.arrayBuffer();let wb=XLSX.read(b);let ws=wb.Sheets['ARANCEL']||wb.Sheets[wb.SheetNames[1]];let rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});arancel=rows.map(r=>({colA:String(r[0]||'').trim(),codigo:String(r[1]||'').trim(),glosa:String(r[2]||'').trim(),unidad:String(r[3]||'').trim(),adv:String(r[4]||'').trim()}));}catch(e){console.log(e)}}
-async function buscarArancel(){await cargarArancel();let q=val('cl-bus').replace(/\s/g,'');if(!q){alert('Escribe partida o nombre');return}let tipo=document.getElementById('cl-tipo').value;let out=document.getElementById('cl-res');let clean=q.replace('.','');let res=[];
-if(/^[0-9]+$/.test(clean)){
-  if(tipo==='auto'||tipo==='8'){let f=arancel.filter(x=>x.codigo.replace('.','')===clean);if(f.length)res=f}
-  if(!res.length&&(tipo==='auto'||tipo==='6')){let f=arancel.filter(x=>x.codigo.replace('.','').startsWith(clean)&&x.codigo.replace('.','').length>=6);if(f.length)res=f.slice(0,80)}
-  if(!res.length&&(tipo==='auto'||tipo==='4')){let f=arancel.filter(x=>x.colA.replace('.','')===clean||x.codigo.replace('.','').startsWith(clean));if(f.length)res=f.slice(0,80)}
-}else{let qq=q.toLowerCase();res=arancel.filter(x=>x.glosa.toLowerCase().includes(qq)).slice(0,80)}
-if(!res.length){out.innerText='No encontrado: '+q+'\nRevisa punto y dígitos. Ej: 0901 - 0901.21 - 0901.2100';return}
-let txt='Resultado para: '+q+'\n\n';res.forEach(r=>{txt+='• '+(r.colA?r.colA+' | ':'')+(r.codigo?r.codigo+' | ':'')+r.glosa+' | Unidad: '+r.unidad+' | Derecho: '+r.adv+'\n\n'});out.innerText=txt}
+async function cargarArancel(){if(arancel.length)returnasync function cargarArancel(){
+  if(arancel.length) return;
+  try{
+    let r=await fetch(ARCHIVO_ARANCEL);
+    let b=await r.arrayBuffer();
+    let wb=XLSX.read(b,{type:'array'});
+    let ws=wb.Sheets['Arancel Ad. 2023']||wb.Sheets['ARANCEL']||wb.Sheets[wb.SheetNames[0]];
+    let rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+    arancel=[];
+    rows.forEach(row=>{
+      let colA=String(row[0]||'').trim();
+      let codigo=String(row[1]||'').trim();
+      let glosa=String(row[2]||'').trim();
+      let unidad=String(row[3]||'').trim();
+      let adv=String(row[4]||'').trim();
+      if(!glosa) return;
+      if(glosa.toLowerCase().includes('glosa')) return;
+      if(colA && /^\d{2}\.\d{2}$/.test(colA)){
+        arancel.push({colA:colA,codigo:'',codigoMostrar:colA,glosa:glosa,unidad:unidad,adv:adv,tipo:'Partida'});
+        return;
+      }
+      if(codigo && /^\d{4}\.\d{2,4}$/.test(codigo)){
+        let sinPunto=codigo.replace('.','');
+        let tipo=sinPunto.length===6?'Subpartida':'Ítem';
+        arancel.push({colA:colA,codigo:codigo,codigoMostrar:codigo,glosa:glosa,unidad:unidad,adv:adv,tipo:tipo});
+      }
+    });
+  }catch(e){ console.log(e); }
+}
+async function buscarArancel(){
+  await cargarArancel();
+  let q=val('cl-bus').replace(/\s/g,'');
+  if(!q){ alert('Escribe partida o nombre'); return; }
+  let tipo=document.getElementById('cl-tipo').value;
+  let out=document.getElementById('cl-res');
+  let clean=q.replace(/\./g,'');
+  let res=[];
+  if(/^[0-9]+$/.test(clean)){
+    if(tipo==='auto'||tipo==='8'){
+      let f=arancel.filter(x=>(x.codigoMostrar||'').replace(/\./g,'')===clean);
+      if(f.length) res=f;
+    }
+    if(!res.length&&(tipo==='auto'||tipo==='6')){
+      let f=arancel.filter(x=>(x.codigoMostrar||'').replace(/\./g,'').startsWith(clean)&&(x.codigoMostrar||'').replace(/\./g,'').length>=6);
+      if(f.length) res=f.slice(0,80);
+    }
+    if(!res.length&&(tipo==='auto'||tipo==='4')){
+      let f=arancel.filter(x=>(x.codigoMostrar||'').replace(/\./g,'').startsWith(clean));
+      if(f.length) res=f.slice(0,80);
+    }
+  }else{
+    let qq=q.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    res=arancel.filter(x=>x.glosa.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').includes(qq)).slice(0,80);
+  }
+  if(!res.length){ out.innerText='No encontrado: '+q+'\nRevisa punto y dígitos. Ej: 0901 - 0901.21 - 0901.2100'; return; }
+  let txt='Resultado para: '+q+'\n\n';
+  res.forEach(r=>{ txt+='• '+(r.codigoMostrar?r.codigoMostrar+' | ':'')+r.glosa+' | Unidad: '+r.unidad+' | Derecho: '+r.adv+'\n\n'; });
+  out.innerText=txt;
+}
 function tratado(){let p=val('tr-pais'),pa=val('tr-partida');document.getElementById('tr-res').innerText='Consulta registrada: País '+p+' - Partida '+pa+'\nTratado o Acuerdo Comercial aplicable según origen y partida.'}
 function valoracion(){let fob=+val('v-fob')||0,flete=+val('v-flete')||0,seg=+val('v-seg')||0;let cif=fob+flete+seg;document.getElementById('v-res').innerText='FOB '+fob+' + FLETE '+flete+' + SEGURO '+seg+' = CIF '+cif+'\nValor Aduanero = CIF. Luego se aplica derecho según partida + IVA 19%.'}
 function enviarConsulta(tipo){let txt=tipo==='Importación'?val('ct-imp'):val('ct-exp');document.getElementById('ct-res').innerText='Consulta '+tipo+' enviada.\nTexto: '+txt}
