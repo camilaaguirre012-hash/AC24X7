@@ -11,28 +11,28 @@ body{background:#000;color:#fff;overflow-x:hidden}
 .hidden{display:none!important}
 button,input,select,textarea{font-size:16px;border-radius:14px;border:none;outline:none}
 input,select,textarea{width:100%;padding:13px;margin:7px 0;background:#111;color:#fff;border:1px solid #333}
-input:focus{border-color:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.25)}
+input:focus{border-color:#fff}
 button{cursor:pointer;font-weight:900;padding:14px}
-/* FONDO SUAVE, SIN PARPADEO INFINITO */
+/* FONDO FIJO, SIN MOVIMIENTO */
 .bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-.bg i{position:absolute;font-size:28px;opacity:.18}
+.bg i{position:absolute;font-size:28px;opacity:.16}
 .bg i:nth-child(1){left:8%;top:12%}
 .bg i:nth-child(2){left:82%;top:18%}
 .bg i:nth-child(3){left:18%;top:82%}
 .bg i:nth-child(4){left:78%;top:78%}
 .bg i:nth-child(5){left:48%;top:8%}
-/* ENTRADA SUAVE */
-@keyframes entra{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-/* DESTELLO DE SOLO UN MOMENTO EN EL MENU */
-@keyframes destello{
-  0%{filter:brightness(1);transform:scale(1)}
-  25%{filter:brightness(1.9);transform:scale(1.03);box-shadow:0 0 32px rgba(255,255,255,.9)}
-  100%{filter:brightness(1);transform:scale(1);box-shadow:none}
+/* TRANSICION SENCILLA PARA TODAS LAS PANTALLAS: SOLO APARECER */
+@keyframes aparecer{from{opacity:0}to{opacity:1}}
+/* MENU: DESTELLO DESDE ATRAS HACIA ADELANTE, UNA SOLA VEZ, Y SE QUEDA AHI */
+/* No se mueve de lado a lado. Solo escala de atras hacia adelante + destello de luz */
+@keyframes destelloFinal{
+  0%{opacity:0;transform:scale(.88);filter:brightness(.6)}
+  35%{opacity:1;transform:scale(1.02);filter:brightness(1.9);box-shadow:0 0 38px rgba(255,255,255,.95)}
+  100%{opacity:1;transform:scale(1);filter:brightness(1);box-shadow:none}
 }
-@keyframes giroUnaVez{from{transform:rotate(-8deg)}to{transform:rotate(0)}}
-.wrap{position:relative;z-index:1;max-width:520px;margin:0 auto;padding:18px 16px 90px;animation:entra .45s ease}
+.wrap{position:relative;z-index:1;max-width:520px;margin:0 auto;padding:18px 16px 90px;animation:aparecer .3s ease}
 .top{display:flex;align-items:center;gap:12px}
-.logoBox{width:76px;height:76px;border-radius:50%;background:#fff;padding:6px;flex-shrink:0;animation:giroUnaVez .7s ease}
+.logoBox{width:76px;height:76px;border-radius:50%;background:#fff;padding:6px;flex-shrink:0}
 .logoBox img{width:100%;height:100%;border-radius:50%;object-fit:cover}
 h1{font-size:38px;letter-spacing:-1px;line-height:.9}
 h1 span{font-size:17px;letter-spacing:3px;display:block;color:#ccc}
@@ -43,17 +43,17 @@ h1 span{font-size:17px;letter-spacing:3px;display:block;color:#ccc}
 .link{color:#fff;text-decoration:underline;cursor:pointer;font-size:13px;display:inline-block;margin:8px 6px 0 0}
 .btnWhite{background:#fff;color:#000;width:100%}
 .btnGhost{background:transparent;color:#fff;border:1px solid #444;width:100%}
-.mod{display:flex;gap:14px;align-items:center;padding:18px;border-radius:22px;margin:12px 0;cursor:pointer;color:#fff;animation:destello .9s ease 1}
-.mod:active{transform:scale(.97)}
+.mod{display:flex;gap:14px;align-items:center;padding:18px;border-radius:22px;margin:12px 0;cursor:pointer;color:#fff;animation:destelloFinal .8s ease 1 both}
+.mod:active{transform:scale(.98)}
 .mod b{font-size:20px;line-height:1}
 .mod p{font-size:13px;opacity:.9}
 .mod .ic{font-size:36px}
-/* Destello escalonado: cada tarjeta destella una sola vez, una tras otra */
+/* Destello escalonado, una sola vez, desde atras hacia adelante */
 .mod:nth-child(1){animation-delay:.05s}
-.mod:nth-child(2){animation-delay:.18s}
-.mod:nth-child(3){animation-delay:.31s}
-.mod:nth-child(4){animation-delay:.44s}
-.mod:nth-child(5){animation-delay:.57s}
+.mod:nth-child(2){animation-delay:.20s}
+.mod:nth-child(3){animation-delay:.35s}
+.mod:nth-child(4){animation-delay:.50s}
+.mod:nth-child(5){animation-delay:.65s}
 .m-blue{background:linear-gradient(135deg,#0A4FD6,#1E90FF)}
 .m-green{background:linear-gradient(135deg,#2E8B00,#7ED321);color:#000}
 .m-orange{background:linear-gradient(135deg,#C24E00,#FF7A00)}
@@ -68,7 +68,6 @@ h1 span{font-size:17px;letter-spacing:3px;display:block;color:#ccc}
 <body>
 <div class="bg"><i>🚢</i><i>✈️</i><i>🚛</i><i>📦</i><i>🌎</i></div>
 
-<!-- LOGIN -->
 <div id="p-login" class="wrap">
   <div class="top"><div class="logoBox"><img src="logo.jpg" onerror="this.src='https://via.placeholder.com/150?text=COMEX+24x7'"></div><div><h1>COMEX<span>24x7 - ASESORIA Y LOGISTICA</span></h1></div></div>
   <p class="sub">Versión de prueba, sin membresía ni costo por el momento.</p>
@@ -83,7 +82,6 @@ h1 span{font-size:17px;letter-spacing:3px;display:block;color:#ccc}
   </div>
 </div>
 
-<!-- REGISTRO -->
 <div id="p-register" class="wrap hidden">
   <h1>Crear Cuenta</h1><p class="sub">Crea tu cuenta para usar la app.</p>
   <div class="card">
@@ -103,7 +101,6 @@ h1 span{font-size:17px;letter-spacing:3px;display:block;color:#ccc}
   </div>
 </div>
 
-<!-- RECUPERAR -->
 <div id="p-recover" class="wrap hidden">
   <h1>Recuperar contraseña</h1><p class="sub">Elige una vía.</p>
   <div class="card"><b>1. Por pregunta secreta</b><input id="rec-user" placeholder="Tu usuario"><button class="btnWhite" onclick="recQ1()">Ver mi pregunta secreta</button><div id="rec-qbox" class="hidden"><p id="rec-qtext" class="small"></p><input id="rec-ans" placeholder="Tu respuesta secreta"><input id="rec-new" type="password" placeholder="Nueva contraseña"><button class="btnWhite" onclick="recQ2()">Cambiar contraseña</button></div></div>
@@ -111,7 +108,6 @@ h1 span{font-size:17px;letter-spacing:3px;display:block;color:#ccc}
   <button class="btnGhost" onclick="show('p-login')">Volver</button>
 </div>
 
-<!-- HOME -->
 <div id="p-home" class="wrap hidden">
   <div class="top"><div class="logoBox"><img src="logo.jpg"></div><div><h1>COMEX<span>24x7</span></h1><p class="small">Hola, <b id="hello"></b> - Modo prueba, sin costo</p></div></div>
   <p class="sub">Elige tu opción</p>
@@ -125,7 +121,6 @@ h1 span{font-size:17px;letter-spacing:3px;display:block;color:#ccc}
   <button class="btnGhost" onclick="logout()">Cerrar sesión</button>
 </div>
 
-<!-- ASESORIA -->
 <div id="p-asesoria" class="wrap hidden">
   <h1>Asesoría Comex</h1><p class="sub">Normativa Aduanera, Clasificación, Tratados, Valoración y FAQ.</p>
   <div class="card"><h3>🔎 Clasificación Arancelaria - 4, 6 y 8 dígitos</h3><p class="small">Busca en tu hoja ARANCEL. Usa punto Ej: 0000.0000 o escribe nombre de mercancía.</p>
@@ -144,10 +139,8 @@ h1 span{font-size:17px;letter-spacing:3px;display:block;color:#ccc}
   </div>
 </div>
 
-<!-- TECNICA -->
 <div id="p-tecnica" class="wrap hidden"><h1>Consulta Técnica</h1><div class="card"><b>Importaciones</b><textarea id="ct-imp" rows="3" placeholder="Describa su consulta de importación"></textarea><button class="btnWhite" onclick="enviarConsulta('Importación')">Enviar</button></div><div class="card"><b>Exportaciones</b><textarea id="ct-exp" rows="3" placeholder="Describa su consulta de exportación"></textarea><button class="btnWhite" onclick="enviarConsulta('Exportación')">Enviar</button></div><div id="ct-res" class="res">Tus consultas quedan guardadas y te respondemos por WhatsApp / Email.</div></div>
 
-<!-- COTIZACION -->
 <div id="p-cotiza" class="wrap hidden"><h1>Cotización Servicios</h1>
   <div class="card"><b>Costos Agencia de Aduanas</b><input id="c-valor" type="number" placeholder="Indique Valor Mercancías USD"><input id="c-tipo" placeholder="Tipo de Mercancías"><input id="c-moneda" placeholder="Moneda Compra"><input id="c-incoterm" placeholder="Cláusula / Incoterms"><button class="btnWhite" onclick="cotizar('Agencia de Aduanas')">Cotizar</button></div>
   <div class="card"><b>Costos Flete Internacional</b><input id="f-tipo" placeholder="Tipo Mercancías"><input id="f-pais" placeholder="País de Embarque"><input id="f-puerto" placeholder="Puerto Embarque"><input id="f-via" placeholder="Vía de Transporte"><input id="f-bultos" placeholder="Tipo de Bultos"><input id="f-kb" type="number" placeholder="Kilos Brutos"><input id="f-m3" type="number" placeholder="M3"><input id="f-incoterm" placeholder="Incoterms"><input id="f-dir" placeholder="Dirección de Retiro"><button class="btnWhite" onclick="cotizar('Flete Internacional')">Cotizar</button></div>
@@ -157,10 +150,8 @@ h1 span{font-size:17px;letter-spacing:3px;display:block;color:#ccc}
   <div id="cot-res" class="res">Detalle: Honorarios, Gastos Agencia, Transmisión, Valor Flete, Canje, Modificación, Desconsolidación, Horas libres, Peonetas, Grúas, Flete Falso, Valor Asegurado, Prima, Valor Neto, IVA 19%, Total. Consulte por costos extras: Aforos, Reconocimientos, etc.</div>
 </div>
 
-<!-- SOCIOS -->
 <div id="p-socios" class="wrap hidden"><h1>Socios Logísticos</h1><div class="card"><input id="so-nombre" placeholder="Nombre Empresa"><input id="so-contacto" placeholder="Contacto"><select id="so-tipo"><option>Flete Internacional</option><option>Seguros de Carga</option><option>Flete Nacional</option><option>Bodegas Almacenamiento</option></select><button class="btnWhite" onclick="socio()">Registrar socio</button></div><div id="so-res" class="res">Socios registrados aparecerán aquí.</div></div>
 
-<!-- TRANSPORTE -->
 <div id="p-transporte" class="wrap hidden"><h1>Transportes Nacionales</h1><div class="card"><b>Ingresa Disponibilidad</b><input id="t-empresa" placeholder="Nombre Empresa"><input id="t-rut" placeholder="RUT"><input id="t-contacto" placeholder="Contacto Directo"><input id="t-tel" placeholder="Teléfono"><input id="t-correo" placeholder="Correo"><input id="t-aduana" placeholder="Aduana"><input id="t-horario" placeholder="Horario"><input id="t-m3" placeholder="M3 Libres"><input id="t-kb" placeholder="KB Libres"><input id="t-veh" placeholder="Tipo Vehículo"><button class="btnWhite" onclick="transporte()">Publicar disponibilidad</button></div><div class="card"><b>Costos Flete Urgencias</b><button class="btnWhite" onclick="cotizar('Flete Urgencias')">Solicitar urgente</button></div><div id="t-res" class="res"></div></div>
 
 <div class="nav"><button id="nav-home" class="on" onclick="show('p-home')">🏠 Inicio</button><button onclick="show('p-asesoria')">📘 Asesoría</button><button onclick="show('p-tecnica')">💬 Técnica</button><button onclick="show('p-cotiza')">💰 Cotizar</button><button onclick="show('p-socios')">🤝 Socios</button></div>
