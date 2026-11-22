@@ -1,293 +1,218 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>C24X7 - Comex Completo</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>COMEX 24x7 - Asesoría y Logística</title>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
 <style>
-*{box-sizing:border-box;font-family:Arial,sans-serif} body{margin:0;background:#f2f4f7}
-header{background:#0b2a4a;color:#fff;padding:16px;text-align:center} header h1{margin:0} header p{margin:4px 0 0;font-size:13px;opacity:.85}
-.container{max-width:560px;margin:14px auto;padding:0 12px 50px}
-.card{background:#fff;border-radius:14px;padding:18px;box-shadow:0 2px 10px rgba(0,0,0,.08);margin-bottom:12px}
-h2{margin:0 0 10px;color:#0b2a4a;font-size:19px} h3{margin:16px 0 8px;color:#0b2a4a;font-size:15px}
-label{font-size:13px;font-weight:bold;display:block;margin:10px 0 4px}
-input,select,textarea{width:100%;padding:11px;border:1px solid #ccc;border-radius:10px;font-size:14px} textarea{min-height:70px}
-button{width:100%;padding:13px;border:0;border-radius:10px;background:#0b2a4a;color:#fff;font-weight:bold;margin-top:12px;cursor:pointer}
-button.sec{background:#e8eef5;color:#0b2a4a} button.green{background:#0a7a42} button.orange{background:#e67e00}
-.link{text-align:center;margin-top:10px;font-size:13px;color:#0b2a4a;text-decoration:underline;cursor:pointer}
-.hidden{display:none} .small{font-size:12px;color:#666} .result{background:#eef6ff;border-radius:10px;padding:12px;margin-top:12px;font-size:14px;line-height:1.5}
-.menuBtn{background:#fff;border:1px solid #ddd;padding:16px;border-radius:14px;margin-bottom:10px;cursor:pointer;font-weight:bold} .menuBtn span{display:block;font-weight:normal;font-size:12px;color:#666;margin-top:4px}
-.row{display:flex;gap:8px} .row>*{flex:1}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,Helvetica,sans-serif}
+:root{--blue:#1E90FF;--green:#7ED321;--orange:#FF7A00;--purple:#7B2FFF;--cyan:#00C2D1}
+body{background:#000;color:#fff;overflow-x:hidden}
+.hidden{display:none!important}
+button,input,select,textarea{font-size:16px;border-radius:14px;border:none;outline:none}
+input,select,textarea{width:100%;padding:13px;margin:7px 0;background:#111;color:#fff;border:1px solid #333}
+input:focus{border-color:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.25)}
+button{cursor:pointer;font-weight:900;padding:14px}
+/* FONDO ANIMADO */
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.bg i{position:absolute;font-size:28px;opacity:.22;animation:flota 9s ease-in-out infinite}
+.bg i:nth-child(1){left:8%;top:12%;animation-delay:0s}
+.bg i:nth-child(2){left:82%;top:18%;animation-delay:1s}
+.bg i:nth-child(3){left:18%;top:82%;animation-delay:2s}
+.bg i:nth-child(4){left:78%;top:78%;animation-delay:3s}
+.bg i:nth-child(5){left:48%;top:8%;animation-delay:.5s}
+@keyframes flota{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-22px) rotate(8deg)}}
+@keyframes entra{from{opacity:0;transform:translateY(22px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes pulso{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.35)}50%{box-shadow:0 0 0 14px rgba(255,255,255,0)}}
+@keyframes gira{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+@keyframes brillo{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.wrap{position:relative;z-index:1;max-width:520px;margin:0 auto;padding:18px 16px 90px;animation:entra .5s ease}
+.top{display:flex;align-items:center;gap:12px}
+.logoBox{width:76px;height:76px;border-radius:50%;background:#fff;padding:6px;animation:pulso 2.4s infinite;flex-shrink:0}
+.logoBox img{width:100%;height:100%;border-radius:50%;object-fit:cover;animation:gira 22s linear infinite}
+h1{font-size:38px;letter-spacing:-1px;line-height:.9}
+h1 span{font-size:17px;letter-spacing:3px;display:block;color:#ccc}
+.sub{color:#bbb;margin:10px 0 16px;font-size:14px}
+.card{background:#111;border:1px solid #2a2a2a;border-radius:20px;padding:16px;margin:12px 0}
+.card h3{margin-bottom:8px}
+.small{font-size:12px;color:#aaa;line-height:1.5}
+.link{color:#fff;text-decoration:underline;cursor:pointer;font-size:13px;display:inline-block;margin:8px 6px 0 0}
+.btnWhite{background:#fff;color:#000;width:100%}
+.btnGhost{background:transparent;color:#fff;border:1px solid #444;width:100%}
+.chip{display:inline-block;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:900;background:#fff;color:#000}
+.mod{display:flex;gap:14px;align-items:center;padding:18px;border-radius:22px;margin:12px 0;cursor:pointer;color:#fff;animation:flota 5s ease-in-out infinite;transition:.2s}
+.mod:active{transform:scale(.97)}
+.mod b{font-size:20px;line-height:1}
+.mod p{font-size:13px;opacity:.9}
+.mod .ic{font-size:36px}
+.m-blue{background:linear-gradient(135deg,#0A4FD6,#1E90FF);background-size:200% 200%;animation:brillo 5s infinite, flota 5s infinite}
+.m-green{background:linear-gradient(135deg,#2E8B00,#7ED321);color:#000;background-size:200% 200%;animation:brillo 5s infinite, flota 5s infinite}
+.m-orange{background:linear-gradient(135deg,#C24E00,#FF7A00);background-size:200% 200%;animation:brillo 5s infinite, flota 5s infinite}
+.m-purple{background:linear-gradient(135deg,#3B00A6,#7B2FFF);background-size:200% 200%;animation:brillo 5s infinite, flota 5s infinite}
+.m-cyan{background:linear-gradient(135deg,#007A87,#00C2D1);background-size:200% 200%;animation:brillo 5s infinite, flota 5s infinite}
+.res{white-space:pre-wrap;background:#000;border:1px solid #333;border-radius:14px;padding:12px;margin-top:10px;font-size:13px;line-height:1.6;max-height:380px;overflow:auto}
+.kpi{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:12px 0}
+.kpi div{background:#151515;border-radius:16px;padding:12px;text-align:center}
+.kpi b{font-size:20px;display:block}
+.kpi span{font-size:11px;color:#aaa}
+.nav{position:fixed;bottom:0;left:0;right:0;background:#0a0a0a;border-top:1px solid #222;display:flex;z-index:10}
+.nav button{flex:1;background:transparent;color:#ccc;border-radius:0;padding:14px 4px;font-size:12px}
+.nav button.on{color:#fff;border-top:3px solid #fff}
+.badge{background:#FF7A00;color:#fff;padding:4px 9px;border-radius:999px;font-size:12px;font-weight:900}
+table{width:100%;border-collapse:collapse;font-size:13px}
+td,th{border-bottom:1px solid #222;padding:8px;text-align:left}
+.pill{padding:4px 8px;border-radius:999px;background:#222;font-size:11px}
 </style>
 </head>
 <body>
-<header><h1>C24X7</h1><p>Asesoría Comex • Consulta • Cotización • Logística</p></header>
-<div class="container">
+<div class="bg"><i>🚢</i><i>✈️</i><i>🚛</i><i>📦</i><i>🌎</i></div>
 
-<!-- ========== LOGIN ========== -->
-<div id="login" class="card">
-<h2>Iniciar Sesión</h2>
-<label>Nombre de usuario o Correo</label><input id="loginUser" placeholder="Ej: camila.aguirre o cami@mail.com">
-<label>Contraseña</label><input id="loginPass" type="password">
-<button onclick="login()">Entrar</button>
-<div class="link" onclick="show('forgot')">¿Olvidaste tu contraseña?</div>
-<div class="link" onclick="show('register')">¿No tienes cuenta? Crear Cuenta</div>
-<div id="loginMsg" class="result hidden"></div>
+<!-- LOGIN -->
+<div id="p-login" class="wrap">
+  <div class="top"><div class="logoBox"><img src="logo.jpg" onerror="this.src='https://via.placeholder.com/150?text=COMEX+24x7'"></div><div><h1>COMEX<span>24x7 - ASESORIA Y LOGISTICA</span></h1></div></div>
+  <p class="sub">Tu asesoría aduanera y logística, 24 horas, 7 días. Inicia sesión para consultar, clasificar y cotizar.</p>
+  <div class="card">
+    <h3>Iniciar Sesión</h3>
+    <input id="l-user" placeholder="Usuario">
+    <input id="l-pass" type="password" placeholder="Contraseña">
+    <button class="btnWhite" onclick="login()">ENTRAR ➜</button>
+    <span class="link" onclick="show('p-recover')">¿Olvidaste tu contraseña?</span>
+    <span class="link" onclick="show('p-register')">Crear Cuenta</span>
+    <p class="small" style="margin-top:10px">Demo: si no tienes cuenta, crea una. Queda guardada en este celular.</p>
+  </div>
+  <div class="card"><b>💎 Suscripción extra</b><p class="small">Cada consulta técnica / clasificación / cotización detallada cuesta <b style="color:#fff">US$5</b>. Compra créditos y úsalos cuando quieras. El precio se puede cambiar después.</p><button class="btnGhost" onclick="show('p-sub')">Ver planes y comprar créditos</button></div>
 </div>
 
-<!-- ========== CREAR CUENTA ========== -->
-<div id="register" class="card hidden">
-<h2>Crear Cuenta</h2>
-<label>Nombre</label><input id="rNombre" placeholder="Nombre completo">
-<label>Nro. Teléfono</label><input id="rTel" placeholder="+56 9...">
-<label>Email</label><input id="rEmail" type="email">
-<label>País</label><select id="rPais"><option>Chile</option><option>Perú</option><option>Argentina</option><option>Colombia</option><option>México</option><option>Otro</option></select>
-<label>Rubro o Giro Comercial</label><input id="rRubro" placeholder="Ej: Importadora de alimentos">
-<label>Crear Usuario</label><input id="rUser" placeholder="Ej: camila.aguirre">
-<label>Crear Contraseña</label><input id="rPass" type="password">
-<label>Pregunta de Seguridad</label><select id="rPreg"><option>¿Nombre de tu primera mascota?</option><option>¿Ciudad donde naciste?</option><option>¿Nombre de tu colegio?</option></select>
-<label>Respuesta de Seguridad</label><input id="rResp">
-<button onclick="registrar()">Crear mi cuenta</button>
-<div class="link" onclick="show('login')">Ya tengo cuenta - Iniciar Sesión</div>
+<!-- REGISTRO -->
+<div id="p-register" class="wrap hidden">
+  <h1>Crear Cuenta</h1><p class="sub">Crea tu cuenta para usar la app.</p>
+  <div class="card">
+    <input id="r-nombre" placeholder="Nombre completo *">
+    <input id="r-tel" placeholder="Nro. Teléfono *">
+    <input id="r-email" type="email" placeholder="Email * (para recuperar contraseña)">
+    <input id="r-pais" placeholder="País">
+    <input id="r-giro" placeholder="Rubro o Giro Comercial">
+    <input id="r-user" placeholder="Crear Usuario *">
+    <input id="r-pass" type="password" placeholder="Crear Contraseña *">
+    <hr style="border-color:#222;margin:12px 0">
+    <b>🔐 Pregunta secreta libre</b><p class="small">Escribe TU propia pregunta. Te la haremos si olvidas tu contraseña.</p>
+    <input id="r-q" placeholder="Ej: ¿Cómo se llama mi primera mascota?">
+    <input id="r-a" placeholder="Respuesta secreta *">
+    <button class="btnWhite" onclick="register()">CREAR MI CUENTA</button>
+    <span class="link" onclick="show('p-login')">Volver al inicio de sesión</span>
+  </div>
 </div>
 
-<!-- ========== OLVIDO ========== -->
-<div id="forgot" class="card hidden">
-<h2>Recuperar Contraseña</h2>
-<button class="sec" onclick="show('forgotPreg')">1. Con Pregunta de Seguridad</button>
-<button class="sec" onclick="show('forgotMail')">2. Reenviar correo de confirmación</button>
-<div class="link" onclick="show('login')">Volver</div>
-</div>
-<div id="forgotPreg" class="card hidden">
-<h2>Pregunta de Seguridad</h2>
-<label>Usuario o Correo</label><input id="fUser">
-<label>Tu Pregunta</label><select id="fPreg"><option>¿Nombre de tu primera mascota?</option><option>¿Ciudad donde naciste?</option><option>¿Nombre de tu colegio?</option></select>
-<label>Respuesta</label><input id="fResp">
-<label>Nueva Contraseña</label><input id="fNewPass" type="password">
-<button onclick="recuperarPreg()">Cambiar contraseña</button>
-<div class="link" onclick="show('forgot')">Volver</div>
-</div>
-<div id="forgotMail" class="card hidden">
-<h2>Reenviar Correo</h2>
-<label>Correo con el que creaste tu cuenta</label><input id="fMail" type="email">
-<button onclick="alert('Correo enviado a '+fMail.value+' (demo)');show('login')">Enviar correo de confirmación</button>
-<div class="link" onclick="show('forgot')">Volver</div>
+<!-- RECUPERAR -->
+<div id="p-recover" class="wrap hidden">
+  <h1>Recuperar contraseña</h1><p class="sub">Elige una vía.</p>
+  <div class="card"><b>1. Por pregunta secreta</b><input id="rec-user" placeholder="Tu usuario"><button class="btnWhite" onclick="recQ1()">Ver mi pregunta secreta</button><div id="rec-qbox" class="hidden"><p id="rec-qtext" class="small"></p><input id="rec-ans" placeholder="Tu respuesta secreta"><input id="rec-new" type="password" placeholder="Nueva contraseña"><button class="btnWhite" onclick="recQ2()">Cambiar contraseña</button></div></div>
+  <div class="card"><b>2. Por email</b><input id="rec-email" placeholder="Tu email registrado"><button class="btnGhost" onclick="recEmail()">Enviar link / código al email</button><p id="rec-email-msg" class="small"></p></div>
+  <button class="btnGhost" onclick="show('p-login')">Volver</button>
 </div>
 
-<!-- ========== MENU ========== -->
-<div id="menu" class="hidden">
-<div class="card"><h2 id="bienvenida">¡Hola!</h2><p class="small">Elige tu opción:</p></div>
-<div class="menuBtn" onclick="show('comex')">Asesoría Comex<span>Normativa • Clasificación • Tratados • Valoración</span></div>
-<div class="menuBtn" onclick="show('tec')">Consulta Técnica<span>Importaciones • Exportaciones</span></div>
-<div class="menuBtn" onclick="show('cotiz')">Cotización Servicios<span>Agencia • Flete Inter • Flete Nacional • Seguro • Almacenaje</span></div>
-<div class="menuBtn" onclick="show('socios')">Socios Logísticos<span>Flete Inter • Seguro • Flete Nacional • Bodegas</span></div>
-<div class="menuBtn" onclick="show('transp')">Transportes Nacionales<span>Empresas • Disponibilidad • Flete Urgencias</span></div>
-<button class="sec" onclick="show('login')">Cerrar Sesión</button>
+<!-- HOME -->
+<div id="p-home" class="wrap hidden">
+  <div class="top"><div class="logoBox"><img src="logo.jpg"></div><div><h1>COMEX<span>24x7</span></h1><p class="small">Hola, <b id="hello"></b></p></div></div>
+  <div class="kpi"><div><b id="k-cred">0</b><span>Créditos</span></div><div><b>US$5</b><span>Por consulta</span></div><div><b id="k-user">-</b><span>Usuario</span></div></div>
+  <div class="card" style="display:flex;justify-content:space-between;align-items:center"><div><b>💎 Suscripción</b><p class="small">Cada consulta detallada = US$5</p></div><button style="width:auto;background:#FF7A00;color:#fff" onclick="show('p-sub')">Comprar</button></div>
+  <p class="sub">Elige tu opción</p>
+  <div class="mod m-blue" onclick="openMod('asesoria')"><span class="ic">📘</span><div><b>Asesoría Comex</b><p>Normativa, Clasificación, Tratados, Valoración, FAQ</p></div></div>
+  <div class="mod m-green" onclick="openMod('tecnica')"><span class="ic">💬</span><div><b>Consulta Técnica</b><p>Importaciones y Exportaciones</p></div></div>
+  <div class="mod m-orange" onclick="openMod('cotiza')"><span class="ic">💰</span><div><b>Cotización Servicios</b><p>Agencia, Fletes, Seguro, Almacenaje</p></div></div>
+  <div class="mod m-purple" onclick="openMod('socios')"><span class="ic">🤝</span><div><b>Socios Logísticos</b><p>Flete, Seguro, Bodegas</p></div></div>
+  <div class="mod m-cyan" onclick="openMod('transporte')"><span class="ic">🚛</span><div><b>Transportes Nacionales</b><p>Disponibilidad y Flete Urgencias</p></div></div>
+  <button class="btnGhost" onclick="logout()">Cerrar sesión</button>
 </div>
 
-<!-- ========== ASESORIA COMEX MENU ========== -->
-<div id="comex" class="hidden"><div class="card"><h2>Asesoría Comex</h2>
-<button class="sec" onclick="show('normativa')">Normativa Aduanera</button>
-<button class="sec" onclick="show('clasif')">Clasificación Arancelaria</button>
-<button class="sec" onclick="show('tratados')">Tratados Comerciales</button>
-<button class="sec" onclick="show('valoracion')">Valoración Aduanera</button>
-<button onclick="show('menu')">⬅ Volver al Menú</button></div></div>
-
-<!-- NORMATIVA -->
-<div id="normativa" class="card hidden"><h2>Normativa Aduanera</h2>
-<h3>Preguntas Frecuentes</h3>
-<button class="sec" onclick="alert('1. Qué mercancías se pueden importar: Todas las que no estén prohibidas, cumpliendo requisitos sanitarios y aduaneros.')">1. Qué mercancías se pueden importar</button>
-<button class="sec" onclick="alert('2. Impuestos importación: Derecho Ad Valorem 6% + IVA 19% sobre Valor CIF.')">2. Cuáles son los impuestos que se aplican a una Importación</button>
-<button class="sec" onclick="alert('Pregunta 3 - espacio para agregar')">3. (Espacio para agregar)</button>
-<button class="sec" onclick="alert('Pregunta 4 - espacio para agregar')">4. (Espacio para agregar)</button>
-<h3>Ingrese su Consulta</h3><label>Describa la Consulta</label><textarea id="consultaNorm" placeholder="Escribe tu consulta..."></textarea>
-<button class="green" onclick="alert('Consulta enviada: '+consultaNorm.value)">Enviar Consulta</button>
-<button onclick="show('comex')">⬅ Volver</button></div>
-
-<!-- CLASIFICACION -->
-<div id="clasif" class="card hidden"><h2>Clasificación Arancelaria</h2>
-<h3>Ingresar Partida Arancelaria</h3>
-<div class="row"><div><label>4 Dígitos</label><input id="p4" placeholder="0000"></div><div><label>6 Dígitos</label><input id="p6" placeholder="000000"></div><div><label>8 Dígitos</label><input id="p8" placeholder="00000000"></div></div>
-<label>Indicar con punto Ej: 0000.0000</label><input id="pPunto" placeholder="0000.0000">
-<h3>Ingresar Nombre de las Mercancías</h3><input id="nomMerc" placeholder="Ej: Zapatillas">
-<button onclick="resPartida.classList.remove('hidden');resPartida.innerHTML='<b>Mercancía:</b> '+(nomMerc.value||'')+'<br><b>Partida:</b> '+(pPunto.value||p4.value)+'<br>Resultado: Revisar en arancel (demo).'">Buscar Partida Arancelaria</button>
-<div id="resPartida" class="result hidden"></div>
-<button onclick="show('comex')">⬅ Volver</button></div>
-
-<!-- TRATADOS -->
-<div id="tratados" class="card hidden"><h2>Tratados Comerciales</h2>
-<label>Indique País</label><select id="tPais"><option>Chile</option><option>China</option><option>EE.UU.</option><option>Unión Europea</option><option>Brasil</option><option>México</option></select>
-<h3>Ingrese Partida Arancelaria</h3>
-<div class="row"><div><label>4 Dígitos</label><input id="t4"></div><div><label>6 Dígitos</label><input id="t6"></div><div><label>8 Dígitos</label><input id="t8"></div></div>
-<label>Indicar con punto Ej: 0000.0000</label><input id="tPunto">
-<label>Tratado o Acuerdo Comercial</label><input id="tTratado" placeholder="Ej: TLC Chile - China">
-<button onclick="resTratado.classList.remove('hidden');resTratado.innerHTML='<b>País:</b> '+tPais.value+'<br><b>Partida:</b> '+(tPunto.value||t4.value)+'<br><b>Tratado:</b> '+tTratado.value+'<br>Resultado demo: Ver acuerdo vigente.'">Consultar Tratado</button>
-<div id="resTratado" class="result hidden"></div>
-<button onclick="show('comex')">⬅ Volver</button></div>
-
-<!-- VALORACION -->
-<div id="valoracion" class="card hidden"><h2>Valoración Aduanera</h2>
-<label>Divisa de Transacción / Moneda</label><select id="vMoneda"><option>USD - Dólar</option><option>EUR - Euro</option><option>CLP - Peso Chileno</option></select>
-<label>Cláusula de Compra / Incoterms</label><select id="vIncoterm"><option>FOB</option><option>CIF</option><option>EXW</option><option>DDP</option><option>CFR</option></select>
-<label>Valor Merc. Según Cláusula</label><input id="vValor" type="number" placeholder="10000">
-<h3>Conformación Valor Aduanero</h3>
-<div class="row"><div><label>Valor Mercancías</label><input id="cMerc" type="number"></div><div><label>Moneda</label><input value="USD"></div></div>
-<div class="row"><div><label>Gastos</label><input id="cGastos" type="number"></div><div><label>Moneda</label><input value="USD"></div></div>
-<div class="row"><div><label>FOB</label><input id="cFob" type="number"></div><div><label>Moneda</label><input value="USD"></div></div>
-<div class="row"><div><label>FLETE</label><input id="cFlete" type="number"></div><div><label>Moneda</label><input value="USD"></div></div>
-<div class="row"><div><label>SEGURO</label><input id="cSeguro" type="number"></div><div><label>Moneda</label><input value="USD"></div></div>
-<div class="row"><div><label>CIF</label><input id="cCif" readonly></div><div><label>Moneda</label><input value="USD"></div></div>
-<label>Paridad Moneda</label><input id="cParidad" type="number" value="950">
-<label>Valor según cláusula</label><input id="cSegun" readonly>
-<button class="green" onclick="calcularCIF()">Calcular CIF / Valor Aduanero</button>
-<div id="resCIF" class="result hidden"></div>
-<button onclick="show('comex')">⬅ Volver</button></div>
-
-<!-- ========== CONSULTAS TECNICAS ========== -->
-<div id="tec" class="hidden"><div class="card"><h2>Consulta Técnica</h2>
-<button class="sec" onclick="show('tecImp')">Importaciones</button>
-<button class="sec" onclick="show('tecExp')">Exportaciones</button>
-<button onclick="show('menu')">⬅ Volver al Menú</button></div></div>
-<div id="tecImp" class="card hidden"><h2>Consulta Técnica - Importaciones</h2>
-<label>Ingrese su Consulta</label><textarea id="qImp" placeholder="Describe tu consulta de importación..."></textarea>
-<button class="green" onclick="alert('Consulta Importación enviada: '+qImp.value)">Enviar Consulta Importación</button>
-<button onclick="show('tec')">⬅ Volver</button></div>
-<div id="tecExp" class="card hidden"><h2>Consulta Técnica - Exportaciones</h2>
-<label>Ingrese su Consulta</label><textarea id="qExp" placeholder="Describe tu consulta de exportación..."></textarea>
-<button class="green" onclick="alert('Consulta Exportación enviada: '+qExp.value)">Enviar Consulta Exportación</button>
-<button onclick="show('tec')">⬅ Volver</button></div>
-
-<!-- ========== COTIZACION ========== -->
-<div id="cotiz" class="hidden"><div class="card"><h2>Cotización Servicios</h2>
-<button class="sec" onclick="show('cAgencia')">Costos Agencia de Aduanas</button>
-<button class="sec" onclick="show('cFleteInter')">Costos Flete Internacional</button>
-<button class="sec" onclick="show('cFleteNac')">Costos Flete Nacional</button>
-<button class="sec" onclick="show('cSeguro')">Costos Seguro de Carga</button>
-<button class="sec" onclick="show('cAlmacen')">Costos de Almacenaje</button>
-<button onclick="show('menu')">⬅ Volver al Menú</button></div></div>
-
-<!-- AGENCIA -->
-<div id="cAgencia" class="card hidden"><h2>Costos Agencia de Aduanas</h2>
-<label>Indique Valor Mercancías</label><input id="aValor" type="number" placeholder="Ej: 10000">
-<label>Tipo de Mercancías</label><input id="aTipo" placeholder="Ej: Electrónica">
-<label>Moneda Compra</label><select id="aMoneda"><option>USD</option><option>EUR</option><option>CLP</option></select>
-<label>Cláusula de Compra / Incoterms</label><select id="aIncoterm"><option>FOB</option><option>CIF</option><option>EXW</option><option>DDP</option></select>
-<h3>Detalle:</h3>
-<label>Honorarios</label><input id="aHonor" type="number" placeholder="USD">
-<label>Gastos Agencia</label><input id="aGastos" type="number">
-<label>Transmisión Electrónica en USD</label><input id="aTransUSD" type="number">
-<label>Transmisión Electrónica en $</label><input id="aTransCLP" type="number">
-<button class="green" onclick="resAgencia.classList.remove('hidden');resAgencia.innerHTML='<b>Total Estimado Agencia:</b> '+(+aHonor.value+ +aGastos.value+ +aTransUSD.value)+' USD<br>Transmisión: '+aTransCLP.value+' CLP<br>Valor Merc: '+aValor.value+' '+aMoneda.value+' '+aIncoterm.value">Calcular Cotización Agencia</button>
-<div id="resAgencia" class="result hidden"></div>
-<button onclick="show('cotiz')">⬅ Volver</button></div>
-
-<!-- FLETE INTER -->
-<div id="cFleteInter" class="card hidden"><h2>Costos Flete Internacional</h2>
-<label>Tipo de Mercancías</label><input id="fiTipo"><label>País de Embarque</label><input id="fiPais" placeholder="Ej: China">
-<label>Puerto Embarque</label><input id="fiPuerto" placeholder="Ej: Shanghai">
-<label>Vía de Transporte</label><select id="fiVia"><option>Marítimo</option><option>Aéreo</option><option>Terrestre</option></select>
-<label>Tipo de Bultos</label><input id="fiBultos" placeholder="Ej: 10 cajas">
-<label>Kilos Brutos</label><input id="fiKilos" type="number">
-<label>M3</label><input id="fiM3" type="number">
-<label>Cláusula de Compra / Incoterms</label><select id="fiIncoterm"><option>FOB</option><option>CIF</option><option>EXW</option></select>
-<label>Dirección de Retiro</label><input id="fiRetiro" placeholder="Dirección completa">
-<h3>Detalle:</h3><label>Valor Flete</label><input id="fiValor" type="number">
-<label>Gastos en País de Destino</label><input id="fiGastos" type="number">
-<label>Canje</label><input id="fiCanje" type="number"><label>Modificación</label><input id="fiMod" type="number"><label>Desconsolidación</label><input id="fiDescon" type="number">
-<button class="green" onclick="resFi.classList.remove('hidden');resFi.innerHTML='<b>Flete:</b> '+fiValor.value+'<br><b>Gastos Destino:</b> '+fiGastos.value+'<br><b>Canje:</b> '+fiCanje.value+' + <b>Modif:</b> '+fiMod.value+' + <b>Descon:</b> '+fiDescon.value+'<br><b>Total:</b> '+(+fiValor.value+ +fiGastos.value+ +fiCanje.value+ +fiMod.value+ +fiDescon.value)">Calcular Flete Internacional</button>
-<div id="resFi" class="result hidden"></div><button onclick="show('cotiz')">⬅ Volver</button></div>
-
-<!-- FLETE NAC -->
-<div id="cFleteNac" class="card hidden"><h2>Costos Flete Nacional</h2>
-<label>Aduana Retiro</label><select id="fnAduana"><option>San Antonio</option><option>Valparaíso</option><option>Santiago</option><option>Iquique</option></select>
-<label>Tipo de Mercancías</label><input id="fnTipo"><label>Tipo de Bultos</label><input id="fnBultos">
-<label>Kilos Brutos</label><input id="fnKilos" type="number"><label>M3</label><input id="fnM3" type="number">
-<label>Dirección de Entrega</label><input id="fnEntrega">
-<label>Cuadrilla de Peonetas</label><select id="fnPeonetas"><option>Sí</option><option>No</option></select>
-<label>Servicio Grúa Descarga</label><select id="fnGrua"><option>Sí</option><option>No</option></select>
-<label>Sobreestadía Descarga</label><input id="fnSobre" placeholder="Horas">
-<h3>Detalle:</h3><label>Valor Flete</label><input id="fnValor" type="number">
-<label>Horas Libres descarga</label><input id="fnHoras" type="number" placeholder="Ej: 2 horas">
-<label>Costos Adicionales: Sobreestadía</label><input id="fnCostSobre" type="number">
-<label>Peonetas</label><input id="fnCostPeon" type="number"><label>Servicio de Grúas</label><input id="fnCostGrua" type="number"><label>Flete Falso</label><input id="fnFalso" type="number">
-<button class="green" onclick="resFn.classList.remove('hidden');resFn.innerHTML='<b>Valor Flete:</b> '+fnValor.value+'<br><b>Adicionales:</b> Sobre '+fnCostSobre.value+' + Peonetas '+fnCostPeon.value+' + Grúa '+fnCostGrua.value+' + Falso '+fnFalso.value+'<br><b>Total:</b> '+(+fnValor.value+ +fnCostSobre.value+ +fnCostPeon.value+ +fnCostGrua.value+ +fnFalso.value)">Calcular Flete Nacional</button>
-<div id="resFn" class="result hidden"></div><button onclick="show('cotiz')">⬅ Volver</button></div>
-
-<!-- SEGURO -->
-<div id="cSeguro" class="card hidden"><h2>Costos Seguro de Carga</h2>
-<label>Valor Mercancías</label><input id="sValor" type="number"><label>Tipo de Mercancías</label><input id="sTipo">
-<label>Vía de Transporte</label><select id="sVia"><option>Marítimo</option><option>Aéreo</option><option>Terrestre</option></select>
-<label>País de Origen</label><input id="sPais"><label>Puerto Descarga</label><input id="sPuerto"><label>Tipo de Bultos</label><input id="sBultos">
-<h3>Detalle:</h3><label>Valor Asegurado</label><input id="sAseg" type="number"><label>Valor Prima de Seguros</label><input id="sPrima" type="number">
-<button class="green" onclick="resSeg.classList.remove('hidden');resSeg.innerHTML='<b>Valor Asegurado:</b> '+sAseg.value+'<br><b>Prima:</b> '+sPrima.value">Calcular Seguro</button>
-<div id="resSeg" class="result hidden"></div><button onclick="show('cotiz')">⬅ Volver</button></div>
-
-<!-- ALMACENAJE -->
-<div id="cAlmacen" class="card hidden"><h2>Costos de Almacenaje</h2>
-<label>Aduana Retiro</label><select id="alAduana"><option>San Antonio</option><option>Valparaíso</option><option>Santiago</option></select>
-<label>Valor CIF</label><input id="alCif" type="number"><label>Kilos Brutos</label><input id="alKilos" type="number"><label>M3</label><input id="alM3" type="number">
-<label>Fecha de Arribo</label><input id="alArribo" type="date"><label>Fecha de Retiro</label><input id="alRetiro" type="date">
-<h3>Detalle:</h3><label>Valor Neto</label><input id="alNeto" type="number">
-<label>IVA 19%</label><input id="alIva" type="number" readonly><label>Total Costo</label><input id="alTotal" type="number" readonly>
-<button class="green" onclick="alIva.value=(+alNeto.value*0.19).toFixed(0);alTotal.value=(+alNeto.value*1.19).toFixed(0);resAlm.classList.remove('hidden');resAlm.innerHTML='<b>Neto:</b> '+alNeto.value+'<br><b>IVA 19%:</b> '+alIva.value+'<br><b>Total:</b> '+alTotal.value">Calcular Almacenaje</button>
-<div id="resAlm" class="result hidden"></div><button onclick="show('cotiz')">⬅ Volver</button></div>
-
-<!-- ========== SOCIOS ========== -->
-<div id="socios" class="hidden"><div class="card"><h2>Socios Logísticos</h2>
-<button class="sec" onclick="show('socDetalle')">Flete Internacional</button>
-<button class="sec" onclick="show('socDetalle')">Seguros de Carga</button>
-<button class="sec" onclick="show('socDetalle')">Flete Nacional</button>
-<button class="sec" onclick="show('socDetalle')">Bodegas Almacenamiento</button>
-<button onclick="show('menu')">⬅ Volver al Menú</button></div></div>
-<div id="socDetalle" class="card hidden"><h2>Detalle Socio Logístico</h2>
-<label>Nombre Empresa</label><input id="soNom" placeholder="Nombre empresa socia">
-<label>Contacto</label><input id="soCon" placeholder="Nombre contacto / teléfono / correo">
-<button class="green" onclick="alert('Socio guardado: '+soNom.value+' - '+soCon.value)">Guardar Socio</button>
-<button onclick="show('socios')">⬅ Volver</button></div>
-
-<!-- ========== TRANSPORTES ========== -->
-<div id="transp" class="card hidden"><h2>Transportes Nacionales</h2>
-<label>Nombre Empresa</label><input id="trNom"><label>Rut</label><input id="trRut" placeholder="12.345.678-9">
-<label>Contacto Directo</label><input id="trContacto"><label>Teléfono</label><input id="trTel"><label>Correo</label><input id="trMail" type="email">
-<h3>Ingresa Disponibilidad</h3>
-<label>Aduana</label><select id="trAduana"><option>San Antonio</option><option>Valparaíso</option><option>Santiago</option><option>Iquique</option></select>
-<label>Horario</label><input id="trHorario" placeholder="Ej: 08:00 - 18:00">
-<div class="row"><div><label>M3 Libres</label><input id="trM3" type="number"></div><div><label>KB Libres</label><input id="trKb" type="number"></div></div>
-<label>Tipo Vehículo</label><select id="trVeh"><option>Camión 3/4</option><option>Camión 10 Ton</option><option>Rampla</option><option>Camioneta</option></select>
-<h3>Costos Flete Urgencias</h3><label>Valor Flete Urgencia</label><input id="trUrg" type="number" placeholder="$">
-<button class="green" onclick="resTr.classList.remove('hidden');resTr.innerHTML='<b>'+trNom.value+' ('+trRut.value+')</b><br>Contacto: '+trContacto.value+' - '+trTel.value+'<br>Aduana: '+trAduana.value+' Horario: '+trHorario.value+'<br>M3 Libres: '+trM3.value+' KB Libres: '+trKb.value+' Vehículo: '+trVeh.value+'<br><b>Flete Urgencia: $'+trUrg.value">Guardar Transporte / Ver Disponibilidad</button>
-<div id="resTr" class="result hidden"></div>
-<button onclick="show('menu')">⬅ Volver al Menú</button></div>
-
+<!-- ASESORIA -->
+<div id="p-asesoria" class="wrap hidden">
+  <h1>Asesoría Comex</h1><p class="sub">Normativa Aduanera, Clasificación, Tratados, Valoración y FAQ.</p>
+  <div class="card"><h3>🔎 Clasificación Arancelaria - 4, 6 y 8 dígitos</h3><p class="small">Busca en tu hoja ARANCEL. Usa punto Ej: 0000.0000 o escribe nombre de mercancía.</p>
+    <input id="cl-bus" placeholder="Ej: 0901.2100 o café tostado">
+    <select id="cl-tipo"><option value="auto">Automático (4 / 6 / 8)</option><option value="4">Solo 4 dígitos - Partida</option><option value="6">Solo 6 dígitos - Subpartida</option><option value="8">Solo 8 dígitos - Ítem</option></select>
+    <button class="btnWhite" onclick="buscarArancel()">BUSCAR - US$5 / consulta</button>
+    <p class="small">Se descuenta 1 crédito por búsqueda. Si no tienes créditos, te pedimos comprar.</p>
+    <div id="cl-res" class="res">Aún sin búsqueda. Carga primero el archivo pagina_ac24x7.xlsx en el mismo repo.</div>
+  </div>
+  <div class="card"><h3>🌎 Tratados Comerciales</h3><input id="tr-pais" placeholder="Indique País"><input id="tr-partida" placeholder="Ingrese Partida arancelaria Ej: 0901.2100"><button class="btnWhite" onclick="tratado()">Consultar tratado - US$5</button><div id="tr-res" class="res">Ingresa país y partida para ver tratado aplicable.</div></div>
+  <div class="card"><h3>⚖️ Valoración Aduanera</h3><p class="small">Conformación Valor Aduanero: Valor según cláusula + gastos.</p><input id="v-fob" type="number" placeholder="FOB"><input id="v-flete" type="number" placeholder="FLETE"><input id="v-seg" type="number" placeholder="SEGURO"><button class="btnWhite" onclick="valoracion()">Calcular CIF</button><div id="v-res" class="res">CIF = FOB + FLETE + SEGURO</div></div>
+  <div class="card"><h3>❓ Preguntas Frecuentes</h3>
+    <details><summary><b>1. ¿Qué mercancías se pueden importar a Chile?</b></summary><p class="small">Todas las que no estén prohibidas, con su clasificación, permisos y pago de derechos e IVA según corresponda.</p></details>
+    <details><summary><b>2. ¿Cuáles son los impuestos de una importación?</b></summary><p class="small">Derecho ad valorem según partida + IVA 19% sobre CIF + derechos. Tasas específicas según mercancía.</p></details>
+    <details><summary><b>3. ¿Qué vías de transporte existen?</b></summary><p class="small">Marítima, aérea, terrestre y multimodal, según origen, peso, volumen y urgencia.</p></details>
+    <details><summary><b>4. ¿Cuál es el Artículo 154 de la Ordenanza de Aduanas?</b></summary><p class="small">Regula la declaración, el examen y la valoración de mercancías y la responsabilidad del declarante ante Aduanas. Pide la asesoría detallada para tu caso.</p></details>
+  </div>
 </div>
+
+<!-- TECNICA -->
+<div id="p-tecnica" class="wrap hidden"><h1>Consulta Técnica</h1><div class="card"><b>Importaciones</b><textarea id="ct-imp" rows="3" placeholder="Describa su consulta de importación"></textarea><button class="btnWhite" onclick="enviarConsulta('Importación')">Enviar - US$5</button></div><div class="card"><b>Exportaciones</b><textarea id="ct-exp" rows="3" placeholder="Describa su consulta de exportación"></textarea><button class="btnWhite" onclick="enviarConsulta('Exportación')">Enviar - US$5</button></div><div id="ct-res" class="res">Tus consultas quedan guardadas y te respondemos por WhatsApp / Email.</div></div>
+
+<!-- COTIZACION -->
+<div id="p-cotiza" class="wrap hidden"><h1>Cotización Servicios</h1>
+  <div class="card"><b>Costos Agencia de Aduanas</b><input id="c-valor" type="number" placeholder="Indique Valor Mercancías USD"><input id="c-tipo" placeholder="Tipo de Mercancías"><input id="c-moneda" placeholder="Moneda Compra"><input id="c-incoterm" placeholder="Cláusula / Incoterms"><button class="btnWhite" onclick="cotizar('Agencia de Aduanas')">Cotizar - US$5</button></div>
+  <div class="card"><b>Costos Flete Internacional</b><input id="f-tipo" placeholder="Tipo Mercancías"><input id="f-pais" placeholder="País de Embarque"><input id="f-puerto" placeholder="Puerto Embarque"><input id="f-via" placeholder="Vía de Transporte"><input id="f-bultos" placeholder="Tipo de Bultos"><input id="f-kb" type="number" placeholder="Kilos Brutos"><input id="f-m3" type="number" placeholder="M3"><input id="f-incoterm" placeholder="Incoterms"><input id="f-dir" placeholder="Dirección de Retiro"><button class="btnWhite" onclick="cotizar('Flete Internacional')">Cotizar - US$5</button></div>
+  <div class="card"><b>Costos Flete Nacional</b><input id="n-aduana" placeholder="Aduana Retiro"><input id="n-tipo" placeholder="Tipo Mercancías"><input id="n-bultos" placeholder="Tipo de Bultos"><input id="n-kb" type="number" placeholder="Kilos Brutos"><input id="n-m3" type="number" placeholder="M3"><input id="n-dir" placeholder="Dirección de Entrega"><input id="n-cuadrilla" placeholder="Cuadrilla de Peonetas"><input id="n-grua" placeholder="Servicio Grúa Descarga"><input id="n-sobre" placeholder="Sobreestadía Descarga"><button class="btnWhite" onclick="cotizar('Flete Nacional')">Cotizar - US$5</button></div>
+  <div class="card"><b>Costo Seguro de Carga</b><input id="s-valor" type="number" placeholder="Valor Mercancías"><input id="s-tipo" placeholder="Tipo de Mercancías"><input id="s-via" placeholder="Vía de Transporte"><input id="s-origen" placeholder="País de Origen"><input id="s-descarga" placeholder="Puerto Descarga"><input id="s-bultos" placeholder="Tipo de bultos"><button class="btnWhite" onclick="cotizar('Seguro de Carga')">Cotizar - US$5</button></div>
+  <div class="card"><b>Costos de Almacenaje</b><input id="a-aduana" placeholder="Aduana Retiro"><input id="a-cif" type="number" placeholder="Valor CIF"><input id="a-kb" type="number" placeholder="Kilos Brutos"><input id="a-m3" type="number" placeholder="M3"><input id="a-arribo" placeholder="Fecha de Arribo"><input id="a-retiro" placeholder="Fecha de Retiro"><button class="btnWhite" onclick="cotizar('Almacenaje')">Cotizar - US$5</button></div>
+  <div id="cot-res" class="res">Detalle: Honorarios, Gastos Agencia, Transmisión Electrónica, Valor Flete, Canje, Modificación, Desconsolidación, Horas libres, Peonetas, Grúas, Flete Falso, Valor Asegurado, Prima, Valor Neto, IVA 19%, Total Costo. Consulte por costos extras: Aforos, Reconocimientos, etc. Las compañías de transporte, forwarders y empresas de correo rápido trabajan con tipo de cambio diferente al Aduanero o al Dólar Observado.</div>
+</div>
+
+<!-- SOCIOS -->
+<div id="p-socios" class="wrap hidden"><h1>Socios Logísticos</h1><div class="card"><input id="so-nombre" placeholder="Nombre Empresa"><input id="so-contacto" placeholder="Contacto"><select id="so-tipo"><option>Flete Internacional</option><option>Seguros de Carga</option><option>Flete Nacional</option><option>Bodegas Almacenamiento</option></select><button class="btnWhite" onclick="socio()">Registrar socio</button></div><div id="so-res" class="res">Socios registrados aparecerán aquí.</div></div>
+
+<!-- TRANSPORTE -->
+<div id="p-transporte" class="wrap hidden"><h1>Transportes Nacionales</h1><div class="card"><b>Ingresa Disponibilidad</b><input id="t-empresa" placeholder="Nombre Empresa"><input id="t-rut" placeholder="RUT"><input id="t-contacto" placeholder="Contacto Directo"><input id="t-tel" placeholder="Teléfono"><input id="t-correo" placeholder="Correo"><input id="t-aduana" placeholder="Aduana"><input id="t-horario" placeholder="Horario"><input id="t-m3" placeholder="M3 Libres"><input id="t-kb" placeholder="KB Libres"><input id="t-veh" placeholder="Tipo Vehículo"><button class="btnWhite" onclick="transporte()">Publicar disponibilidad</button></div><div class="card"><b>Costos Flete Urgencias</b><p class="small">Solicita cotización urgente, se cobra como consulta US$5.</p><button class="btnWhite" onclick="cotizar('Flete Urgencias')">Solicitar urgente</button></div><div id="t-res" class="res"></div></div>
+
+<!-- SUSCRIPCION -->
+<div id="p-sub" class="wrap hidden"><h1>💎 Suscripción</h1><p class="sub">Compra créditos. 1 crédito = 1 consulta detallada.</p>
+  <div class="card"><b>1 consulta</b><p>US$5 - Ideal para probar</p><button class="btnWhite" onclick="comprar(1,5)">Comprar 1 x US$5</button></div>
+  <div class="card"><b>5 consultas</b><p>US$25 - Para un embarque</p><button class="btnWhite" onclick="comprar(5,25)">Comprar 5 x US$25</button></div>
+  <div class="card"><b>10 consultas</b><p>US$50 - Para clientes frecuentes</p><button class="btnWhite" onclick="comprar(10,50)">Comprar 10 x US$50</button></div>
+  <p class="small">Demo: el pago real se conecta después a Webpay / Stripe / Transferencia. Por ahora suma los créditos al instante.</p><button class="btnGhost" onclick="show('p-home')">Volver al inicio</button>
+</div>
+
+<div class="nav"><button id="nav-home" class="on" onclick="show('p-home')">🏠 Inicio</button><button onclick="show('p-asesoria')">📘 Asesoría</button><button onclick="show('p-tecnica')">💬 Técnica</button><button onclick="show('p-cotiza')">💰 Cotizar</button><button onclick="show('p-sub')">💎 Suscripción</button></div>
+
 <script>
-function show(id){
-['login','register','forgot','forgotPreg','forgotMail','menu','comex','normativa','clasif','tratados','valoracion','tec','tecImp','tecExp','cotiz','cAgencia','cFleteInter','cFleteNac','cSeguro','cAlmacen','socios','socDetalle','transp'].forEach(x=>{let e=document.getElementById(x); if(e) e.classList.add('hidden')});
-document.getElementById(id).classList.remove('hidden'); window.scrollTo(0,0);
-}
+// ===== CONFIG - CAMBIA EL PRECIO AQUI =====
+const PRECIO_CONSULTA = 5;
+const ARCHIVO_ARANCEL = 'pagina_ac24x7.xlsx';
+// ==========================================
+let user=null, arancel=[], socios=[], transportes=[];
+function show(id){['p-login','p-register','p-recover','p-home','p-asesoria','p-tecnica','p-cotiza','p-socios','p-transporte','p-sub'].forEach(x=>document.getElementById(x).classList.add('hidden'));document.getElementById(id).classList.remove('hidden');window.scrollTo(0,0);document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('on'));if(id==='p-home')document.getElementById('nav-home').classList.add('on');updateKPI();}
 function getUsers(){return JSON.parse(localStorage.getItem('c24_users')||'[]')}
 function saveUsers(u){localStorage.setItem('c24_users',JSON.stringify(u))}
-function registrar(){
-let u={nombre:rNombre.value,tel:rTel.value,email:rEmail.value,pais:rPais.value,rubro:rRubro.value,user:rUser.value,pass:rPass.value,preg:rPreg.value,resp:rResp.value};
-if(!u.nombre||!u.email||!u.user||!u.pass){alert('Faltan: Nombre, Email, Usuario y Contraseña');return}
-let users=getUsers(); users.push(u); saveUsers(users); alert('¡Cuenta creada, '+u.nombre+'! Ahora inicia sesión.'); show('login');
+function updateKPI(){if(user){document.getElementById('hello').innerText=user.nombre||user.user;document.getElementById('k-user').innerText=user.user;document.getElementById('k-cred').innerText=user.creditos||0}}
+function register(){const u={nombre:val('r-nombre'),tel:val('r-tel'),email:val('r-email'),pais:val('r-pais'),giro:val('r-giro'),user:val('r-user'),pass:val('r-pass'),q:val('r-q'),a:val('r-a'),creditos:0};if(!u.nombre||!u.email||!u.user||!u.pass||!u.q||!u.a){alert('Completa Nombre, Email, Usuario, Contraseña, Pregunta y Respuesta secreta');return}let arr=getUsers();if(arr.find(x=>x.user===u.user)){alert('Ese usuario ya existe');return}arr.push(u);saveUsers(arr);alert('Cuenta creada. Ahora inicia sesión.');show('p-login')}
+function login(){let arr=getUsers();let u=arr.find(x=>x.user===val('l-user')&&x.pass===val('l-pass'));if(!u){alert('Usuario o contraseña incorrectos. Usa ¿Olvidaste tu contraseña?');return}user=u;localStorage.setItem('c24_session',u.user);show('p-home')}
+function logout(){user=null;localStorage.removeItem('c24_session');show('p-login')}
+function recQ1(){let arr=getUsers();let u=arr.find(x=>x.user===val('rec-user'));if(!u){alert('Usuario no encontrado');return}window._rec=u;document.getElementById('rec-qbox').classList.remove('hidden');document.getElementById('rec-qtext').innerText='Tu pregunta: '+u.q}
+function recQ2(){let u=window._rec;if(!u)return;if(val('rec-ans').toLowerCase().trim()!==u.a.toLowerCase().trim()){alert('Respuesta secreta incorrecta');return}let arr=getUsers();let idx=arr.findIndex(x=>x.user===u.user);arr[idx].pass=val('rec-new');saveUsers(arr);alert('Contraseña cambiada. Inicia sesión con la nueva.');show('p-login')}
+function recEmail(){let e=val('rec-email');let arr=getUsers();let u=arr.find(x=>x.email===e);if(!u){document.getElementById('rec-email-msg').innerText='Ese email no está registrado.';return}document.getElementById('rec-email-msg').innerText='Demo: te enviamos un link / código a '+e+' para cambiar tu contraseña. En versión real llega a tu correo.'}
+function val(id){return document.getElementById(id).value.trim()}
+function openMod(m){if(m==='asesoria')show('p-asesoria');if(m==='tecnica')show('p-tecnica');if(m==='cotiza')show('p-cotiza');if(m==='socios')show('p-socios');if(m==='transporte')show('p-transporte')}
+function gastar(){if(!user){alert('Inicia sesión primero');show('p-login');return false}if((user.creditos||0)<1){if(confirm('Necesitas 1 crédito (US$'+PRECIO_CONSULTA+') para esta consulta. ¿Comprar ahora?'))show('p-sub');return false}user.creditos--;let arr=getUsers();let i=arr.findIndex(x=>x.user===user.user);arr[i].creditos=user.creditos;saveUsers(arr);updateKPI();return true}
+function comprar(n,usd){if(!user){alert('Crea cuenta e inicia sesión para comprar');show('p-login');return}user.creditos=(user.creditos||0)+n;let arr=getUsers();let i=arr.findIndex(x=>x.user===user.user);arr[i].creditos=user.creditos;saveUsers(arr);updateKPI();alert('Compra demo exitosa: +'+n+' créditos por US$'+usd+'. Ya tienes '+user.creditos+' créditos.');show('p-home')}
+async function cargarArancel(){if(arancel.length)return;try{let r=await fetch(ARCHIVO_ARANCEL);let b=await r.arrayBuffer();let wb=XLSX.read(b);let ws=wb.Sheets['ARANCEL']||wb.Sheets[wb.SheetNames[1]];let rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});arancel=rows.map(r=>({colA:String(r[0]||'').trim(),codigo:String(r[1]||'').trim(),glosa:String(r[2]||'').trim(),unidad:String(r[3]||'').trim(),adv:String(r[4]||'').trim()}));}catch(e){console.log(e)}}
+async function buscarArancel(){await cargarArancel();let q=val('cl-bus').replace(/\s/g,'');if(!q){alert('Escribe partida o nombre');return}if(!gastar())return;let tipo=document.getElementById('cl-tipo').value;let out=document.getElementById('cl-res');let clean=q.replace('.','');let res=[];
+if(/^[0-9]+$/.test(clean)){
+  if(tipo==='auto'||tipo==='8'){let f=arancel.filter(x=>x.codigo.replace('.','')===clean);if(f.length)res=f}
+  if(!res.length&&(tipo==='auto'||tipo==='6')){let f=arancel.filter(x=>x.codigo.replace('.','').startsWith(clean)&&x.codigo.replace('.','').length>=6);if(f.length)res=f.slice(0,80)}
+  if(!res.length&&(tipo==='auto'||tipo==='4')){let f=arancel.filter(x=>x.colA.replace('.','')===clean||x.codigo.replace('.','').startsWith(clean));if(f.length)res=f.slice(0,80)}
+}else{
+  let qq=q.toLowerCase();res=arancel.filter(x=>x.glosa.toLowerCase().includes(qq)).slice(0,80);
 }
-function login(){
-let v=loginUser.value.trim(), p=loginPass.value;
-let u=getUsers().find(x=>(x.user===v||x.email===v)&&x.pass===p);
-if(!u){loginMsg.classList.remove('hidden');loginMsg.innerHTML='❌ Usuario/Correo o contraseña incorrectos.';return}
-bienvenida.innerText='¡Hola, '+u.nombre+'!'; show('menu');
-}
-function recuperarPreg(){
-let users=getUsers(); let u=users.find(x=>x.user===fUser.value||x.email===fUser.value);
-if(!u){alert('No encontramos esa cuenta');return}
-if(u.resp!==fResp.value){alert('Respuesta incorrecta');return}
-u.pass=fNewPass.value; saveUsers(users); alert('¡Contraseña cambiada!'); show('login');
-}
-function calcularCIF(){
-let fob=+cFob.value||0, flete=+cFlete.value||0, seg=+cSeguro.value||0; let cif=fob+flete+seg; cCif.value=cif;
-let par=+cParidad.value||1; cSegun.value=(cif*par).toFixed(0)+' CLP';
-resCIF.classList.remove('hidden'); resCIF.innerHTML='<b>FOB:</b> '+fob+' + <b>FLETE:</b> '+flete+' + <b>SEGURO:</b> '+seg+' = <b>CIF: '+cif+' USD</b><br><b>Valor Aduanero:</b> '+(cif*par)+' CLP';
-}
+if(!res.length){out.innerText='No encontrado: '+q+'\nRevisa punto y dígitos. Ej: 0901 - 0901.21 - 0901.2100';return}
+let txt='Resultado para: '+q+' - Te quedan '+user.creditos+' créditos\n\n';res.forEach(r=>{txt+='• '+(r.colA?r.colA+' | ':'')+(r.codigo?r.codigo+' | ':'')+r.glosa+' | Unidad: '+r.unidad+' | Derecho: '+r.adv+'\n\n'});out.innerText=txt}
+function tratado(){if(!gastar())return;let p=val('tr-pais'),pa=val('tr-partida');document.getElementById('tr-res').innerText='Consulta registrada: País '+p+' - Partida '+pa+'\nTratado o Acuerdo Comercial aplicable según origen y partida. En versión final se muestra preferencia arancelaria y certificado de origen requerido.'}
+function valoracion(){let fob=+val('v-fob')||0,flete=+val('v-flete')||0,seg=+val('v-seg')||0;let cif=fob+flete+seg;document.getElementById('v-res').innerText='FOB '+fob+' + FLETE '+flete+' + SEGURO '+seg+' = CIF '+cif+'\nValor Aduanero = CIF. Luego se aplica derecho según partida + IVA 19%.'}
+function enviarConsulta(tipo){if(!gastar())return;let txt=tipo==='Importación'?val('ct-imp'):val('ct-exp');document.getElementById('ct-res').innerText='Consulta '+tipo+' enviada (US$'+PRECIO_CONSULTA+'). Te quedan '+user.creditos+' créditos.\nTexto: '+txt}
+function cotizar(tipo){if(!gastar())return;document.getElementById('cot-res').innerText='Cotización '+tipo+' solicitada (US$'+PRECIO_CONSULTA+'). Te quedan '+user.creditos+' créditos.\nDetalle: Honorarios, Gastos Agencia, Transmisión, Flete, Canje, Modificación, Desconsolidación, Horas libres, Peonetas, Grúas, Flete Falso, Seguro, Valor Neto, IVA 19%, Total. Costos extras: Aforos, Reconocimientos, etc. Te contactamos por WhatsApp / Email.'}
+function socio(){let s={n:val('so-nombre'),c:val('so-contacto'),t:document.getElementById('so-tipo').value};socios.push(s);document.getElementById('so-res').innerText=socios.map(x=>'• '+x.t+' - '+x.n+' - '+x.c).join('\n')}
+function transporte(){let t={e:val('t-empresa'),r:val('t-rut'),c:val('t-contacto'),tel:val('t-tel'),correo:val('t-correo'),a:val('t-aduana'),h:val('t-horario'),m3:val('t-m3'),kb:val('t-kb'),v:val('t-veh')};transportes.push(t);document.getElementById('t-res').innerText=transportes.map(x=>'• '+x.e+' - '+x.a+' - M3 libres '+x.m3+' - KB libres '+x.kb+' - '+x.v+' - '+x.tel).join('\n')}
+window.onload=()=>{let s=localStorage.getItem('c24_session');if(s){let u=getUsers().find(x=>x.user===s);if(u){user=u;show('p-home')}}cargarArancel()};
 </script>
 </body>
 </html>
