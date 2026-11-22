@@ -7,30 +7,33 @@
 <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:Arial,Helvetica,sans-serif}
-:root{--blue:#1E90FF;--green:#7ED321;--orange:#FF7A00;--purple:#7B2FFF;--cyan:#00C2D1}
 body{background:#000;color:#fff;overflow-x:hidden}
 .hidden{display:none!important}
 button,input,select,textarea{font-size:16px;border-radius:14px;border:none;outline:none}
 input,select,textarea{width:100%;padding:13px;margin:7px 0;background:#111;color:#fff;border:1px solid #333}
 input:focus{border-color:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.25)}
 button{cursor:pointer;font-weight:900;padding:14px}
-/* FONDO ANIMADO */
+/* FONDO SUAVE, SIN PARPADEO INFINITO */
 .bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-.bg i{position:absolute;font-size:28px;opacity:.22;animation:flota 9s ease-in-out infinite}
-.bg i:nth-child(1){left:8%;top:12%;animation-delay:0s}
-.bg i:nth-child(2){left:82%;top:18%;animation-delay:1s}
-.bg i:nth-child(3){left:18%;top:82%;animation-delay:2s}
-.bg i:nth-child(4){left:78%;top:78%;animation-delay:3s}
-.bg i:nth-child(5){left:48%;top:8%;animation-delay:.5s}
-@keyframes flota{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-22px) rotate(8deg)}}
-@keyframes entra{from{opacity:0;transform:translateY(22px) scale(.98)}to{opacity:1;transform:none}}
-@keyframes pulso{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.35)}50%{box-shadow:0 0 0 14px rgba(255,255,255,0)}}
-@keyframes gira{from{transform:rotate(0)}to{transform:rotate(360deg)}}
-@keyframes brillo{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-.wrap{position:relative;z-index:1;max-width:520px;margin:0 auto;padding:18px 16px 90px;animation:entra .5s ease}
+.bg i{position:absolute;font-size:28px;opacity:.18}
+.bg i:nth-child(1){left:8%;top:12%}
+.bg i:nth-child(2){left:82%;top:18%}
+.bg i:nth-child(3){left:18%;top:82%}
+.bg i:nth-child(4){left:78%;top:78%}
+.bg i:nth-child(5){left:48%;top:8%}
+/* ENTRADA SUAVE */
+@keyframes entra{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+/* DESTELLO DE SOLO UN MOMENTO EN EL MENU */
+@keyframes destello{
+  0%{filter:brightness(1);transform:scale(1)}
+  25%{filter:brightness(1.9);transform:scale(1.03);box-shadow:0 0 32px rgba(255,255,255,.9)}
+  100%{filter:brightness(1);transform:scale(1);box-shadow:none}
+}
+@keyframes giroUnaVez{from{transform:rotate(-8deg)}to{transform:rotate(0)}}
+.wrap{position:relative;z-index:1;max-width:520px;margin:0 auto;padding:18px 16px 90px;animation:entra .45s ease}
 .top{display:flex;align-items:center;gap:12px}
-.logoBox{width:76px;height:76px;border-radius:50%;background:#fff;padding:6px;animation:pulso 2.4s infinite;flex-shrink:0}
-.logoBox img{width:100%;height:100%;border-radius:50%;object-fit:cover;animation:gira 22s linear infinite}
+.logoBox{width:76px;height:76px;border-radius:50%;background:#fff;padding:6px;flex-shrink:0;animation:giroUnaVez .7s ease}
+.logoBox img{width:100%;height:100%;border-radius:50%;object-fit:cover}
 h1{font-size:38px;letter-spacing:-1px;line-height:.9}
 h1 span{font-size:17px;letter-spacing:3px;display:block;color:#ccc}
 .sub{color:#bbb;margin:10px 0 16px;font-size:14px}
@@ -40,29 +43,26 @@ h1 span{font-size:17px;letter-spacing:3px;display:block;color:#ccc}
 .link{color:#fff;text-decoration:underline;cursor:pointer;font-size:13px;display:inline-block;margin:8px 6px 0 0}
 .btnWhite{background:#fff;color:#000;width:100%}
 .btnGhost{background:transparent;color:#fff;border:1px solid #444;width:100%}
-.chip{display:inline-block;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:900;background:#fff;color:#000}
-.mod{display:flex;gap:14px;align-items:center;padding:18px;border-radius:22px;margin:12px 0;cursor:pointer;color:#fff;animation:flota 5s ease-in-out infinite;transition:.2s}
+.mod{display:flex;gap:14px;align-items:center;padding:18px;border-radius:22px;margin:12px 0;cursor:pointer;color:#fff;animation:destello .9s ease 1}
 .mod:active{transform:scale(.97)}
 .mod b{font-size:20px;line-height:1}
 .mod p{font-size:13px;opacity:.9}
 .mod .ic{font-size:36px}
-.m-blue{background:linear-gradient(135deg,#0A4FD6,#1E90FF);background-size:200% 200%;animation:brillo 5s infinite, flota 5s infinite}
-.m-green{background:linear-gradient(135deg,#2E8B00,#7ED321);color:#000;background-size:200% 200%;animation:brillo 5s infinite, flota 5s infinite}
-.m-orange{background:linear-gradient(135deg,#C24E00,#FF7A00);background-size:200% 200%;animation:brillo 5s infinite, flota 5s infinite}
-.m-purple{background:linear-gradient(135deg,#3B00A6,#7B2FFF);background-size:200% 200%;animation:brillo 5s infinite, flota 5s infinite}
-.m-cyan{background:linear-gradient(135deg,#007A87,#00C2D1);background-size:200% 200%;animation:brillo 5s infinite, flota 5s infinite}
+/* Destello escalonado: cada tarjeta destella una sola vez, una tras otra */
+.mod:nth-child(1){animation-delay:.05s}
+.mod:nth-child(2){animation-delay:.18s}
+.mod:nth-child(3){animation-delay:.31s}
+.mod:nth-child(4){animation-delay:.44s}
+.mod:nth-child(5){animation-delay:.57s}
+.m-blue{background:linear-gradient(135deg,#0A4FD6,#1E90FF)}
+.m-green{background:linear-gradient(135deg,#2E8B00,#7ED321);color:#000}
+.m-orange{background:linear-gradient(135deg,#C24E00,#FF7A00)}
+.m-purple{background:linear-gradient(135deg,#3B00A6,#7B2FFF)}
+.m-cyan{background:linear-gradient(135deg,#007A87,#00C2D1)}
 .res{white-space:pre-wrap;background:#000;border:1px solid #333;border-radius:14px;padding:12px;margin-top:10px;font-size:13px;line-height:1.6;max-height:380px;overflow:auto}
-.kpi{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:12px 0}
-.kpi div{background:#151515;border-radius:16px;padding:12px;text-align:center}
-.kpi b{font-size:20px;display:block}
-.kpi span{font-size:11px;color:#aaa}
 .nav{position:fixed;bottom:0;left:0;right:0;background:#0a0a0a;border-top:1px solid #222;display:flex;z-index:10}
 .nav button{flex:1;background:transparent;color:#ccc;border-radius:0;padding:14px 4px;font-size:12px}
 .nav button.on{color:#fff;border-top:3px solid #fff}
-.badge{background:#FF7A00;color:#fff;padding:4px 9px;border-radius:999px;font-size:12px;font-weight:900}
-table{width:100%;border-collapse:collapse;font-size:13px}
-td,th{border-bottom:1px solid #222;padding:8px;text-align:left}
-.pill{padding:4px 8px;border-radius:999px;background:#222;font-size:11px}
 </style>
 </head>
 <body>
@@ -71,7 +71,7 @@ td,th{border-bottom:1px solid #222;padding:8px;text-align:left}
 <!-- LOGIN -->
 <div id="p-login" class="wrap">
   <div class="top"><div class="logoBox"><img src="logo.jpg" onerror="this.src='https://via.placeholder.com/150?text=COMEX+24x7'"></div><div><h1>COMEX<span>24x7 - ASESORIA Y LOGISTICA</span></h1></div></div>
-  <p class="sub">Tu asesoría aduanera y logística, 24 horas, 7 días. Inicia sesión para consultar, clasificar y cotizar.</p>
+  <p class="sub">Versión de prueba, sin membresía ni costo por el momento.</p>
   <div class="card">
     <h3>Iniciar Sesión</h3>
     <input id="l-user" placeholder="Usuario">
@@ -81,7 +81,6 @@ td,th{border-bottom:1px solid #222;padding:8px;text-align:left}
     <span class="link" onclick="show('p-register')">Crear Cuenta</span>
     <p class="small" style="margin-top:10px">Demo: si no tienes cuenta, crea una. Queda guardada en este celular.</p>
   </div>
-  <div class="card"><b>💎 Suscripción extra</b><p class="small">Cada consulta técnica / clasificación / cotización detallada cuesta <b style="color:#fff">US$5</b>. Compra créditos y úsalos cuando quieras. El precio se puede cambiar después.</p><button class="btnGhost" onclick="show('p-sub')">Ver planes y comprar créditos</button></div>
 </div>
 
 <!-- REGISTRO -->
@@ -114,15 +113,15 @@ td,th{border-bottom:1px solid #222;padding:8px;text-align:left}
 
 <!-- HOME -->
 <div id="p-home" class="wrap hidden">
-  <div class="top"><div class="logoBox"><img src="logo.jpg"></div><div><h1>COMEX<span>24x7</span></h1><p class="small">Hola, <b id="hello"></b></p></div></div>
-  <div class="kpi"><div><b id="k-cred">0</b><span>Créditos</span></div><div><b>US$5</b><span>Por consulta</span></div><div><b id="k-user">-</b><span>Usuario</span></div></div>
-  <div class="card" style="display:flex;justify-content:space-between;align-items:center"><div><b>💎 Suscripción</b><p class="small">Cada consulta detallada = US$5</p></div><button style="width:auto;background:#FF7A00;color:#fff" onclick="show('p-sub')">Comprar</button></div>
+  <div class="top"><div class="logoBox"><img src="logo.jpg"></div><div><h1>COMEX<span>24x7</span></h1><p class="small">Hola, <b id="hello"></b> - Modo prueba, sin costo</p></div></div>
   <p class="sub">Elige tu opción</p>
-  <div class="mod m-blue" onclick="openMod('asesoria')"><span class="ic">📘</span><div><b>Asesoría Comex</b><p>Normativa, Clasificación, Tratados, Valoración, FAQ</p></div></div>
-  <div class="mod m-green" onclick="openMod('tecnica')"><span class="ic">💬</span><div><b>Consulta Técnica</b><p>Importaciones y Exportaciones</p></div></div>
-  <div class="mod m-orange" onclick="openMod('cotiza')"><span class="ic">💰</span><div><b>Cotización Servicios</b><p>Agencia, Fletes, Seguro, Almacenaje</p></div></div>
-  <div class="mod m-purple" onclick="openMod('socios')"><span class="ic">🤝</span><div><b>Socios Logísticos</b><p>Flete, Seguro, Bodegas</p></div></div>
-  <div class="mod m-cyan" onclick="openMod('transporte')"><span class="ic">🚛</span><div><b>Transportes Nacionales</b><p>Disponibilidad y Flete Urgencias</p></div></div>
+  <div>
+    <div class="mod m-blue" onclick="openMod('asesoria')"><span class="ic">📘</span><div><b>Asesoría Comex</b><p>Normativa, Clasificación, Tratados, Valoración, FAQ</p></div></div>
+    <div class="mod m-green" onclick="openMod('tecnica')"><span class="ic">💬</span><div><b>Consulta Técnica</b><p>Importaciones y Exportaciones</p></div></div>
+    <div class="mod m-orange" onclick="openMod('cotiza')"><span class="ic">💰</span><div><b>Cotización Servicios</b><p>Agencia, Fletes, Seguro, Almacenaje</p></div></div>
+    <div class="mod m-purple" onclick="openMod('socios')"><span class="ic">🤝</span><div><b>Socios Logísticos</b><p>Flete, Seguro, Bodegas</p></div></div>
+    <div class="mod m-cyan" onclick="openMod('transporte')"><span class="ic">🚛</span><div><b>Transportes Nacionales</b><p>Disponibilidad y Flete Urgencias</p></div></div>
+  </div>
   <button class="btnGhost" onclick="logout()">Cerrar sesión</button>
 </div>
 
@@ -132,11 +131,10 @@ td,th{border-bottom:1px solid #222;padding:8px;text-align:left}
   <div class="card"><h3>🔎 Clasificación Arancelaria - 4, 6 y 8 dígitos</h3><p class="small">Busca en tu hoja ARANCEL. Usa punto Ej: 0000.0000 o escribe nombre de mercancía.</p>
     <input id="cl-bus" placeholder="Ej: 0901.2100 o café tostado">
     <select id="cl-tipo"><option value="auto">Automático (4 / 6 / 8)</option><option value="4">Solo 4 dígitos - Partida</option><option value="6">Solo 6 dígitos - Subpartida</option><option value="8">Solo 8 dígitos - Ítem</option></select>
-    <button class="btnWhite" onclick="buscarArancel()">BUSCAR - US$5 / consulta</button>
-    <p class="small">Se descuenta 1 crédito por búsqueda. Si no tienes créditos, te pedimos comprar.</p>
+    <button class="btnWhite" onclick="buscarArancel()">BUSCAR</button>
     <div id="cl-res" class="res">Aún sin búsqueda. Carga primero el archivo pagina_ac24x7.xlsx en el mismo repo.</div>
   </div>
-  <div class="card"><h3>🌎 Tratados Comerciales</h3><input id="tr-pais" placeholder="Indique País"><input id="tr-partida" placeholder="Ingrese Partida arancelaria Ej: 0901.2100"><button class="btnWhite" onclick="tratado()">Consultar tratado - US$5</button><div id="tr-res" class="res">Ingresa país y partida para ver tratado aplicable.</div></div>
+  <div class="card"><h3>🌎 Tratados Comerciales</h3><input id="tr-pais" placeholder="Indique País"><input id="tr-partida" placeholder="Ingrese Partida arancelaria Ej: 0901.2100"><button class="btnWhite" onclick="tratado()">Consultar tratado</button><div id="tr-res" class="res">Ingresa país y partida para ver tratado aplicable.</div></div>
   <div class="card"><h3>⚖️ Valoración Aduanera</h3><p class="small">Conformación Valor Aduanero: Valor según cláusula + gastos.</p><input id="v-fob" type="number" placeholder="FOB"><input id="v-flete" type="number" placeholder="FLETE"><input id="v-seg" type="number" placeholder="SEGURO"><button class="btnWhite" onclick="valoracion()">Calcular CIF</button><div id="v-res" class="res">CIF = FOB + FLETE + SEGURO</div></div>
   <div class="card"><h3>❓ Preguntas Frecuentes</h3>
     <details><summary><b>1. ¿Qué mercancías se pueden importar a Chile?</b></summary><p class="small">Todas las que no estén prohibidas, con su clasificación, permisos y pago de derechos e IVA según corresponda.</p></details>
@@ -147,69 +145,53 @@ td,th{border-bottom:1px solid #222;padding:8px;text-align:left}
 </div>
 
 <!-- TECNICA -->
-<div id="p-tecnica" class="wrap hidden"><h1>Consulta Técnica</h1><div class="card"><b>Importaciones</b><textarea id="ct-imp" rows="3" placeholder="Describa su consulta de importación"></textarea><button class="btnWhite" onclick="enviarConsulta('Importación')">Enviar - US$5</button></div><div class="card"><b>Exportaciones</b><textarea id="ct-exp" rows="3" placeholder="Describa su consulta de exportación"></textarea><button class="btnWhite" onclick="enviarConsulta('Exportación')">Enviar - US$5</button></div><div id="ct-res" class="res">Tus consultas quedan guardadas y te respondemos por WhatsApp / Email.</div></div>
+<div id="p-tecnica" class="wrap hidden"><h1>Consulta Técnica</h1><div class="card"><b>Importaciones</b><textarea id="ct-imp" rows="3" placeholder="Describa su consulta de importación"></textarea><button class="btnWhite" onclick="enviarConsulta('Importación')">Enviar</button></div><div class="card"><b>Exportaciones</b><textarea id="ct-exp" rows="3" placeholder="Describa su consulta de exportación"></textarea><button class="btnWhite" onclick="enviarConsulta('Exportación')">Enviar</button></div><div id="ct-res" class="res">Tus consultas quedan guardadas y te respondemos por WhatsApp / Email.</div></div>
 
 <!-- COTIZACION -->
 <div id="p-cotiza" class="wrap hidden"><h1>Cotización Servicios</h1>
-  <div class="card"><b>Costos Agencia de Aduanas</b><input id="c-valor" type="number" placeholder="Indique Valor Mercancías USD"><input id="c-tipo" placeholder="Tipo de Mercancías"><input id="c-moneda" placeholder="Moneda Compra"><input id="c-incoterm" placeholder="Cláusula / Incoterms"><button class="btnWhite" onclick="cotizar('Agencia de Aduanas')">Cotizar - US$5</button></div>
-  <div class="card"><b>Costos Flete Internacional</b><input id="f-tipo" placeholder="Tipo Mercancías"><input id="f-pais" placeholder="País de Embarque"><input id="f-puerto" placeholder="Puerto Embarque"><input id="f-via" placeholder="Vía de Transporte"><input id="f-bultos" placeholder="Tipo de Bultos"><input id="f-kb" type="number" placeholder="Kilos Brutos"><input id="f-m3" type="number" placeholder="M3"><input id="f-incoterm" placeholder="Incoterms"><input id="f-dir" placeholder="Dirección de Retiro"><button class="btnWhite" onclick="cotizar('Flete Internacional')">Cotizar - US$5</button></div>
-  <div class="card"><b>Costos Flete Nacional</b><input id="n-aduana" placeholder="Aduana Retiro"><input id="n-tipo" placeholder="Tipo Mercancías"><input id="n-bultos" placeholder="Tipo de Bultos"><input id="n-kb" type="number" placeholder="Kilos Brutos"><input id="n-m3" type="number" placeholder="M3"><input id="n-dir" placeholder="Dirección de Entrega"><input id="n-cuadrilla" placeholder="Cuadrilla de Peonetas"><input id="n-grua" placeholder="Servicio Grúa Descarga"><input id="n-sobre" placeholder="Sobreestadía Descarga"><button class="btnWhite" onclick="cotizar('Flete Nacional')">Cotizar - US$5</button></div>
-  <div class="card"><b>Costo Seguro de Carga</b><input id="s-valor" type="number" placeholder="Valor Mercancías"><input id="s-tipo" placeholder="Tipo de Mercancías"><input id="s-via" placeholder="Vía de Transporte"><input id="s-origen" placeholder="País de Origen"><input id="s-descarga" placeholder="Puerto Descarga"><input id="s-bultos" placeholder="Tipo de bultos"><button class="btnWhite" onclick="cotizar('Seguro de Carga')">Cotizar - US$5</button></div>
-  <div class="card"><b>Costos de Almacenaje</b><input id="a-aduana" placeholder="Aduana Retiro"><input id="a-cif" type="number" placeholder="Valor CIF"><input id="a-kb" type="number" placeholder="Kilos Brutos"><input id="a-m3" type="number" placeholder="M3"><input id="a-arribo" placeholder="Fecha de Arribo"><input id="a-retiro" placeholder="Fecha de Retiro"><button class="btnWhite" onclick="cotizar('Almacenaje')">Cotizar - US$5</button></div>
-  <div id="cot-res" class="res">Detalle: Honorarios, Gastos Agencia, Transmisión Electrónica, Valor Flete, Canje, Modificación, Desconsolidación, Horas libres, Peonetas, Grúas, Flete Falso, Valor Asegurado, Prima, Valor Neto, IVA 19%, Total Costo. Consulte por costos extras: Aforos, Reconocimientos, etc. Las compañías de transporte, forwarders y empresas de correo rápido trabajan con tipo de cambio diferente al Aduanero o al Dólar Observado.</div>
+  <div class="card"><b>Costos Agencia de Aduanas</b><input id="c-valor" type="number" placeholder="Indique Valor Mercancías USD"><input id="c-tipo" placeholder="Tipo de Mercancías"><input id="c-moneda" placeholder="Moneda Compra"><input id="c-incoterm" placeholder="Cláusula / Incoterms"><button class="btnWhite" onclick="cotizar('Agencia de Aduanas')">Cotizar</button></div>
+  <div class="card"><b>Costos Flete Internacional</b><input id="f-tipo" placeholder="Tipo Mercancías"><input id="f-pais" placeholder="País de Embarque"><input id="f-puerto" placeholder="Puerto Embarque"><input id="f-via" placeholder="Vía de Transporte"><input id="f-bultos" placeholder="Tipo de Bultos"><input id="f-kb" type="number" placeholder="Kilos Brutos"><input id="f-m3" type="number" placeholder="M3"><input id="f-incoterm" placeholder="Incoterms"><input id="f-dir" placeholder="Dirección de Retiro"><button class="btnWhite" onclick="cotizar('Flete Internacional')">Cotizar</button></div>
+  <div class="card"><b>Costos Flete Nacional</b><input id="n-aduana" placeholder="Aduana Retiro"><input id="n-tipo" placeholder="Tipo Mercancías"><input id="n-bultos" placeholder="Tipo de Bultos"><input id="n-kb" type="number" placeholder="Kilos Brutos"><input id="n-m3" type="number" placeholder="M3"><input id="n-dir" placeholder="Dirección de Entrega"><input id="n-cuadrilla" placeholder="Cuadrilla de Peonetas"><input id="n-grua" placeholder="Servicio Grúa Descarga"><input id="n-sobre" placeholder="Sobreestadía Descarga"><button class="btnWhite" onclick="cotizar('Flete Nacional')">Cotizar</button></div>
+  <div class="card"><b>Costo Seguro de Carga</b><input id="s-valor" type="number" placeholder="Valor Mercancías"><input id="s-tipo" placeholder="Tipo de Mercancías"><input id="s-via" placeholder="Vía de Transporte"><input id="s-origen" placeholder="País de Origen"><input id="s-descarga" placeholder="Puerto Descarga"><input id="s-bultos" placeholder="Tipo de bultos"><button class="btnWhite" onclick="cotizar('Seguro de Carga')">Cotizar</button></div>
+  <div class="card"><b>Costos de Almacenaje</b><input id="a-aduana" placeholder="Aduana Retiro"><input id="a-cif" type="number" placeholder="Valor CIF"><input id="a-kb" type="number" placeholder="Kilos Brutos"><input id="a-m3" type="number" placeholder="M3"><input id="a-arribo" placeholder="Fecha de Arribo"><input id="a-retiro" placeholder="Fecha de Retiro"><button class="btnWhite" onclick="cotizar('Almacenaje')">Cotizar</button></div>
+  <div id="cot-res" class="res">Detalle: Honorarios, Gastos Agencia, Transmisión, Valor Flete, Canje, Modificación, Desconsolidación, Horas libres, Peonetas, Grúas, Flete Falso, Valor Asegurado, Prima, Valor Neto, IVA 19%, Total. Consulte por costos extras: Aforos, Reconocimientos, etc.</div>
 </div>
 
 <!-- SOCIOS -->
 <div id="p-socios" class="wrap hidden"><h1>Socios Logísticos</h1><div class="card"><input id="so-nombre" placeholder="Nombre Empresa"><input id="so-contacto" placeholder="Contacto"><select id="so-tipo"><option>Flete Internacional</option><option>Seguros de Carga</option><option>Flete Nacional</option><option>Bodegas Almacenamiento</option></select><button class="btnWhite" onclick="socio()">Registrar socio</button></div><div id="so-res" class="res">Socios registrados aparecerán aquí.</div></div>
 
 <!-- TRANSPORTE -->
-<div id="p-transporte" class="wrap hidden"><h1>Transportes Nacionales</h1><div class="card"><b>Ingresa Disponibilidad</b><input id="t-empresa" placeholder="Nombre Empresa"><input id="t-rut" placeholder="RUT"><input id="t-contacto" placeholder="Contacto Directo"><input id="t-tel" placeholder="Teléfono"><input id="t-correo" placeholder="Correo"><input id="t-aduana" placeholder="Aduana"><input id="t-horario" placeholder="Horario"><input id="t-m3" placeholder="M3 Libres"><input id="t-kb" placeholder="KB Libres"><input id="t-veh" placeholder="Tipo Vehículo"><button class="btnWhite" onclick="transporte()">Publicar disponibilidad</button></div><div class="card"><b>Costos Flete Urgencias</b><p class="small">Solicita cotización urgente, se cobra como consulta US$5.</p><button class="btnWhite" onclick="cotizar('Flete Urgencias')">Solicitar urgente</button></div><div id="t-res" class="res"></div></div>
+<div id="p-transporte" class="wrap hidden"><h1>Transportes Nacionales</h1><div class="card"><b>Ingresa Disponibilidad</b><input id="t-empresa" placeholder="Nombre Empresa"><input id="t-rut" placeholder="RUT"><input id="t-contacto" placeholder="Contacto Directo"><input id="t-tel" placeholder="Teléfono"><input id="t-correo" placeholder="Correo"><input id="t-aduana" placeholder="Aduana"><input id="t-horario" placeholder="Horario"><input id="t-m3" placeholder="M3 Libres"><input id="t-kb" placeholder="KB Libres"><input id="t-veh" placeholder="Tipo Vehículo"><button class="btnWhite" onclick="transporte()">Publicar disponibilidad</button></div><div class="card"><b>Costos Flete Urgencias</b><button class="btnWhite" onclick="cotizar('Flete Urgencias')">Solicitar urgente</button></div><div id="t-res" class="res"></div></div>
 
-<!-- SUSCRIPCION -->
-<div id="p-sub" class="wrap hidden"><h1>💎 Suscripción</h1><p class="sub">Compra créditos. 1 crédito = 1 consulta detallada.</p>
-  <div class="card"><b>1 consulta</b><p>US$5 - Ideal para probar</p><button class="btnWhite" onclick="comprar(1,5)">Comprar 1 x US$5</button></div>
-  <div class="card"><b>5 consultas</b><p>US$25 - Para un embarque</p><button class="btnWhite" onclick="comprar(5,25)">Comprar 5 x US$25</button></div>
-  <div class="card"><b>10 consultas</b><p>US$50 - Para clientes frecuentes</p><button class="btnWhite" onclick="comprar(10,50)">Comprar 10 x US$50</button></div>
-  <p class="small">Demo: el pago real se conecta después a Webpay / Stripe / Transferencia. Por ahora suma los créditos al instante.</p><button class="btnGhost" onclick="show('p-home')">Volver al inicio</button>
-</div>
-
-<div class="nav"><button id="nav-home" class="on" onclick="show('p-home')">🏠 Inicio</button><button onclick="show('p-asesoria')">📘 Asesoría</button><button onclick="show('p-tecnica')">💬 Técnica</button><button onclick="show('p-cotiza')">💰 Cotizar</button><button onclick="show('p-sub')">💎 Suscripción</button></div>
+<div class="nav"><button id="nav-home" class="on" onclick="show('p-home')">🏠 Inicio</button><button onclick="show('p-asesoria')">📘 Asesoría</button><button onclick="show('p-tecnica')">💬 Técnica</button><button onclick="show('p-cotiza')">💰 Cotizar</button><button onclick="show('p-socios')">🤝 Socios</button></div>
 
 <script>
-// ===== CONFIG - CAMBIA EL PRECIO AQUI =====
-const PRECIO_CONSULTA = 5;
 const ARCHIVO_ARANCEL = 'pagina_ac24x7.xlsx';
-// ==========================================
 let user=null, arancel=[], socios=[], transportes=[];
-function show(id){['p-login','p-register','p-recover','p-home','p-asesoria','p-tecnica','p-cotiza','p-socios','p-transporte','p-sub'].forEach(x=>document.getElementById(x).classList.add('hidden'));document.getElementById(id).classList.remove('hidden');window.scrollTo(0,0);document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('on'));if(id==='p-home')document.getElementById('nav-home').classList.add('on');updateKPI();}
+function show(id){['p-login','p-register','p-recover','p-home','p-asesoria','p-tecnica','p-cotiza','p-socios','p-transporte'].forEach(x=>document.getElementById(x).classList.add('hidden'));document.getElementById(id).classList.remove('hidden');window.scrollTo(0,0);document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('on'));if(id==='p-home')document.getElementById('nav-home').classList.add('on');if(user)document.getElementById('hello').innerText=user.nombre||user.user;}
 function getUsers(){return JSON.parse(localStorage.getItem('c24_users')||'[]')}
 function saveUsers(u){localStorage.setItem('c24_users',JSON.stringify(u))}
-function updateKPI(){if(user){document.getElementById('hello').innerText=user.nombre||user.user;document.getElementById('k-user').innerText=user.user;document.getElementById('k-cred').innerText=user.creditos||0}}
-function register(){const u={nombre:val('r-nombre'),tel:val('r-tel'),email:val('r-email'),pais:val('r-pais'),giro:val('r-giro'),user:val('r-user'),pass:val('r-pass'),q:val('r-q'),a:val('r-a'),creditos:0};if(!u.nombre||!u.email||!u.user||!u.pass||!u.q||!u.a){alert('Completa Nombre, Email, Usuario, Contraseña, Pregunta y Respuesta secreta');return}let arr=getUsers();if(arr.find(x=>x.user===u.user)){alert('Ese usuario ya existe');return}arr.push(u);saveUsers(arr);alert('Cuenta creada. Ahora inicia sesión.');show('p-login')}
+function val(id){return document.getElementById(id).value.trim()}
+function register(){const u={nombre:val('r-nombre'),tel:val('r-tel'),email:val('r-email'),pais:val('r-pais'),giro:val('r-giro'),user:val('r-user'),pass:val('r-pass'),q:val('r-q'),a:val('r-a')};if(!u.nombre||!u.email||!u.user||!u.pass||!u.q||!u.a){alert('Completa Nombre, Email, Usuario, Contraseña, Pregunta y Respuesta secreta');return}let arr=getUsers();if(arr.find(x=>x.user===u.user)){alert('Ese usuario ya existe');return}arr.push(u);saveUsers(arr);alert('Cuenta creada. Ahora inicia sesión.');show('p-login')}
 function login(){let arr=getUsers();let u=arr.find(x=>x.user===val('l-user')&&x.pass===val('l-pass'));if(!u){alert('Usuario o contraseña incorrectos. Usa ¿Olvidaste tu contraseña?');return}user=u;localStorage.setItem('c24_session',u.user);show('p-home')}
 function logout(){user=null;localStorage.removeItem('c24_session');show('p-login')}
 function recQ1(){let arr=getUsers();let u=arr.find(x=>x.user===val('rec-user'));if(!u){alert('Usuario no encontrado');return}window._rec=u;document.getElementById('rec-qbox').classList.remove('hidden');document.getElementById('rec-qtext').innerText='Tu pregunta: '+u.q}
 function recQ2(){let u=window._rec;if(!u)return;if(val('rec-ans').toLowerCase().trim()!==u.a.toLowerCase().trim()){alert('Respuesta secreta incorrecta');return}let arr=getUsers();let idx=arr.findIndex(x=>x.user===u.user);arr[idx].pass=val('rec-new');saveUsers(arr);alert('Contraseña cambiada. Inicia sesión con la nueva.');show('p-login')}
-function recEmail(){let e=val('rec-email');let arr=getUsers();let u=arr.find(x=>x.email===e);if(!u){document.getElementById('rec-email-msg').innerText='Ese email no está registrado.';return}document.getElementById('rec-email-msg').innerText='Demo: te enviamos un link / código a '+e+' para cambiar tu contraseña. En versión real llega a tu correo.'}
-function val(id){return document.getElementById(id).value.trim()}
+function recEmail(){let e=val('rec-email');let arr=getUsers();let u=arr.find(x=>x.email===e);if(!u){document.getElementById('rec-email-msg').innerText='Ese email no está registrado.';return}document.getElementById('rec-email-msg').innerText='Demo: te enviamos un link / código a '+e+' para cambiar tu contraseña.'}
 function openMod(m){if(m==='asesoria')show('p-asesoria');if(m==='tecnica')show('p-tecnica');if(m==='cotiza')show('p-cotiza');if(m==='socios')show('p-socios');if(m==='transporte')show('p-transporte')}
-function gastar(){if(!user){alert('Inicia sesión primero');show('p-login');return false}if((user.creditos||0)<1){if(confirm('Necesitas 1 crédito (US$'+PRECIO_CONSULTA+') para esta consulta. ¿Comprar ahora?'))show('p-sub');return false}user.creditos--;let arr=getUsers();let i=arr.findIndex(x=>x.user===user.user);arr[i].creditos=user.creditos;saveUsers(arr);updateKPI();return true}
-function comprar(n,usd){if(!user){alert('Crea cuenta e inicia sesión para comprar');show('p-login');return}user.creditos=(user.creditos||0)+n;let arr=getUsers();let i=arr.findIndex(x=>x.user===user.user);arr[i].creditos=user.creditos;saveUsers(arr);updateKPI();alert('Compra demo exitosa: +'+n+' créditos por US$'+usd+'. Ya tienes '+user.creditos+' créditos.');show('p-home')}
 async function cargarArancel(){if(arancel.length)return;try{let r=await fetch(ARCHIVO_ARANCEL);let b=await r.arrayBuffer();let wb=XLSX.read(b);let ws=wb.Sheets['ARANCEL']||wb.Sheets[wb.SheetNames[1]];let rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});arancel=rows.map(r=>({colA:String(r[0]||'').trim(),codigo:String(r[1]||'').trim(),glosa:String(r[2]||'').trim(),unidad:String(r[3]||'').trim(),adv:String(r[4]||'').trim()}));}catch(e){console.log(e)}}
-async function buscarArancel(){await cargarArancel();let q=val('cl-bus').replace(/\s/g,'');if(!q){alert('Escribe partida o nombre');return}if(!gastar())return;let tipo=document.getElementById('cl-tipo').value;let out=document.getElementById('cl-res');let clean=q.replace('.','');let res=[];
+async function buscarArancel(){await cargarArancel();let q=val('cl-bus').replace(/\s/g,'');if(!q){alert('Escribe partida o nombre');return}let tipo=document.getElementById('cl-tipo').value;let out=document.getElementById('cl-res');let clean=q.replace('.','');let res=[];
 if(/^[0-9]+$/.test(clean)){
   if(tipo==='auto'||tipo==='8'){let f=arancel.filter(x=>x.codigo.replace('.','')===clean);if(f.length)res=f}
   if(!res.length&&(tipo==='auto'||tipo==='6')){let f=arancel.filter(x=>x.codigo.replace('.','').startsWith(clean)&&x.codigo.replace('.','').length>=6);if(f.length)res=f.slice(0,80)}
   if(!res.length&&(tipo==='auto'||tipo==='4')){let f=arancel.filter(x=>x.colA.replace('.','')===clean||x.codigo.replace('.','').startsWith(clean));if(f.length)res=f.slice(0,80)}
-}else{
-  let qq=q.toLowerCase();res=arancel.filter(x=>x.glosa.toLowerCase().includes(qq)).slice(0,80);
-}
+}else{let qq=q.toLowerCase();res=arancel.filter(x=>x.glosa.toLowerCase().includes(qq)).slice(0,80)}
 if(!res.length){out.innerText='No encontrado: '+q+'\nRevisa punto y dígitos. Ej: 0901 - 0901.21 - 0901.2100';return}
-let txt='Resultado para: '+q+' - Te quedan '+user.creditos+' créditos\n\n';res.forEach(r=>{txt+='• '+(r.colA?r.colA+' | ':'')+(r.codigo?r.codigo+' | ':'')+r.glosa+' | Unidad: '+r.unidad+' | Derecho: '+r.adv+'\n\n'});out.innerText=txt}
-function tratado(){if(!gastar())return;let p=val('tr-pais'),pa=val('tr-partida');document.getElementById('tr-res').innerText='Consulta registrada: País '+p+' - Partida '+pa+'\nTratado o Acuerdo Comercial aplicable según origen y partida. En versión final se muestra preferencia arancelaria y certificado de origen requerido.'}
+let txt='Resultado para: '+q+'\n\n';res.forEach(r=>{txt+='• '+(r.colA?r.colA+' | ':'')+(r.codigo?r.codigo+' | ':'')+r.glosa+' | Unidad: '+r.unidad+' | Derecho: '+r.adv+'\n\n'});out.innerText=txt}
+function tratado(){let p=val('tr-pais'),pa=val('tr-partida');document.getElementById('tr-res').innerText='Consulta registrada: País '+p+' - Partida '+pa+'\nTratado o Acuerdo Comercial aplicable según origen y partida.'}
 function valoracion(){let fob=+val('v-fob')||0,flete=+val('v-flete')||0,seg=+val('v-seg')||0;let cif=fob+flete+seg;document.getElementById('v-res').innerText='FOB '+fob+' + FLETE '+flete+' + SEGURO '+seg+' = CIF '+cif+'\nValor Aduanero = CIF. Luego se aplica derecho según partida + IVA 19%.'}
-function enviarConsulta(tipo){if(!gastar())return;let txt=tipo==='Importación'?val('ct-imp'):val('ct-exp');document.getElementById('ct-res').innerText='Consulta '+tipo+' enviada (US$'+PRECIO_CONSULTA+'). Te quedan '+user.creditos+' créditos.\nTexto: '+txt}
-function cotizar(tipo){if(!gastar())return;document.getElementById('cot-res').innerText='Cotización '+tipo+' solicitada (US$'+PRECIO_CONSULTA+'). Te quedan '+user.creditos+' créditos.\nDetalle: Honorarios, Gastos Agencia, Transmisión, Flete, Canje, Modificación, Desconsolidación, Horas libres, Peonetas, Grúas, Flete Falso, Seguro, Valor Neto, IVA 19%, Total. Costos extras: Aforos, Reconocimientos, etc. Te contactamos por WhatsApp / Email.'}
+function enviarConsulta(tipo){let txt=tipo==='Importación'?val('ct-imp'):val('ct-exp');document.getElementById('ct-res').innerText='Consulta '+tipo+' enviada.\nTexto: '+txt}
+function cotizar(tipo){document.getElementById('cot-res').innerText='Cotización '+tipo+' solicitada.\nDetalle: Honorarios, Gastos Agencia, Transmisión, Flete, Canje, Modificación, Desconsolidación, Horas libres, Peonetas, Grúas, Flete Falso, Seguro, Valor Neto, IVA 19%, Total. Costos extras: Aforos, Reconocimientos, etc. Te contactamos por WhatsApp / Email.'}
 function socio(){let s={n:val('so-nombre'),c:val('so-contacto'),t:document.getElementById('so-tipo').value};socios.push(s);document.getElementById('so-res').innerText=socios.map(x=>'• '+x.t+' - '+x.n+' - '+x.c).join('\n')}
 function transporte(){let t={e:val('t-empresa'),r:val('t-rut'),c:val('t-contacto'),tel:val('t-tel'),correo:val('t-correo'),a:val('t-aduana'),h:val('t-horario'),m3:val('t-m3'),kb:val('t-kb'),v:val('t-veh')};transportes.push(t);document.getElementById('t-res').innerText=transportes.map(x=>'• '+x.e+' - '+x.a+' - M3 libres '+x.m3+' - KB libres '+x.kb+' - '+x.v+' - '+x.tel).join('\n')}
 window.onload=()=>{let s=localStorage.getItem('c24_session');if(s){let u=getUsers().find(x=>x.user===s);if(u){user=u;show('p-home')}}cargarArancel()};
