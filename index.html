@@ -157,7 +157,7 @@ h1 span{font-size:17px;letter-spacing:3px;display:block;color:#ccc}
 <div class="nav"><button id="nav-home" class="on" onclick="show('p-home')">🏠 Inicio</button><button onclick="show('p-asesoria')">📘 Asesoría</button><button onclick="show('p-tecnica')">💬 Técnica</button><button onclick="show('p-cotiza')">💰 Cotizar</button><button onclick="show('p-socios')">🤝 Socios</button></div>
 
 <script>
-const ARCHIVO_ARANCEL = 'pagina_ac24x7.xlsx';
+const ARCHIVO_ARANCEL = 'ARANCEL 2023.xlsx';
 let user=null, arancel=[], socios=[], transportes=[];
 function show(id){['p-login','p-register','p-recover','p-home','p-asesoria','p-tecnica','p-cotiza','p-socios','p-transporte'].forEach(x=>document.getElementById(x).classList.add('hidden'));document.getElementById(id).classList.remove('hidden');window.scrollTo(0,0);document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('on'));if(id==='p-home')document.getElementById('nav-home').classList.add('on');if(user)document.getElementById('hello').innerText=user.nombre||user.user;}
 function getUsers(){return JSON.parse(localStorage.getItem('c24_users')||'[]')}
