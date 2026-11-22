@@ -170,7 +170,7 @@ function recQ1(){let arr=getUsers();let u=arr.find(x=>x.user===val('rec-user'));
 function recQ2(){let u=window._rec;if(!u)return;if(val('rec-ans').toLowerCase().trim()!==u.a.toLowerCase().trim()){alert('Respuesta secreta incorrecta');return}let arr=getUsers();let idx=arr.findIndex(x=>x.user===u.user);arr[idx].pass=val('rec-new');saveUsers(arr);alert('Contraseña cambiada. Inicia sesión con la nueva.');show('p-login')}
 function recEmail(){let e=val('rec-email');let arr=getUsers();let u=arr.find(x=>x.email===e);if(!u){document.getElementById('rec-email-msg').innerText='Ese email no está registrado.';return}document.getElementById('rec-email-msg').innerText='Demo: te enviamos un link / código a '+e+' para cambiar tu contraseña.'}
 function openMod(m){if(m==='asesoria')show('p-asesoria');if(m==='tecnica')show('p-tecnica');if(m==='cotiza')show('p-cotiza');if(m==='socios')show('p-socios');if(m==='transporte')show('p-transporte')}
-async function cargarArancel(){if(arancel.length)returnasync function cargarArancel(){
+async function cargarArancel(){
   if(arancel.length) return;
   try{
     let r=await fetch(ARCHIVO_ARANCEL);
