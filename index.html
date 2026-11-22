@@ -1,92 +1,293 @@
-<!-- CLASIFICACIÓN ARANCELARIA - BUSCADOR 4-6-8 -->
-<section id="clasificacion" style="padding:40px 20px;max-width:900px;margin:auto">
-  <h2>🔍 Clasificación Arancelaria</h2>
-  <p>Busca tu producto paso a paso: elige la Partida de 4 dígitos, luego la Subpartida de 6, hasta llegar al Código completo de 8.</p>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C24X7 - Comex Completo</title>
+<style>
+*{box-sizing:border-box;font-family:Arial,sans-serif} body{margin:0;background:#f2f4f7}
+header{background:#0b2a4a;color:#fff;padding:16px;text-align:center} header h1{margin:0} header p{margin:4px 0 0;font-size:13px;opacity:.85}
+.container{max-width:560px;margin:14px auto;padding:0 12px 50px}
+.card{background:#fff;border-radius:14px;padding:18px;box-shadow:0 2px 10px rgba(0,0,0,.08);margin-bottom:12px}
+h2{margin:0 0 10px;color:#0b2a4a;font-size:19px} h3{margin:16px 0 8px;color:#0b2a4a;font-size:15px}
+label{font-size:13px;font-weight:bold;display:block;margin:10px 0 4px}
+input,select,textarea{width:100%;padding:11px;border:1px solid #ccc;border-radius:10px;font-size:14px} textarea{min-height:70px}
+button{width:100%;padding:13px;border:0;border-radius:10px;background:#0b2a4a;color:#fff;font-weight:bold;margin-top:12px;cursor:pointer}
+button.sec{background:#e8eef5;color:#0b2a4a} button.green{background:#0a7a42} button.orange{background:#e67e00}
+.link{text-align:center;margin-top:10px;font-size:13px;color:#0b2a4a;text-decoration:underline;cursor:pointer}
+.hidden{display:none} .small{font-size:12px;color:#666} .result{background:#eef6ff;border-radius:10px;padding:12px;margin-top:12px;font-size:14px;line-height:1.5}
+.menuBtn{background:#fff;border:1px solid #ddd;padding:16px;border-radius:14px;margin-bottom:10px;cursor:pointer;font-weight:bold} .menuBtn span{display:block;font-weight:normal;font-size:12px;color:#666;margin-top:4px}
+.row{display:flex;gap:8px} .row>*{flex:1}
+</style>
+</head>
+<body>
+<header><h1>C24X7</h1><p>Asesoría Comex • Consulta • Cotización • Logística</p></header>
+<div class="container">
 
-  <input id="buscadorArancel" type="text" placeholder="Ej: café, 0901, notebook, vino..." 
-    style="width:100%;padding:14px;border-radius:10px;border:1px solid #ccc;font-size:16px">
+<!-- ========== LOGIN ========== -->
+<div id="login" class="card">
+<h2>Iniciar Sesión</h2>
+<label>Nombre de usuario o Correo</label><input id="loginUser" placeholder="Ej: camila.aguirre o cami@mail.com">
+<label>Contraseña</label><input id="loginPass" type="password">
+<button onclick="login()">Entrar</button>
+<div class="link" onclick="show('forgot')">¿Olvidaste tu contraseña?</div>
+<div class="link" onclick="show('register')">¿No tienes cuenta? Crear Cuenta</div>
+<div id="loginMsg" class="result hidden"></div>
+</div>
 
-  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:15px">
-    <select id="sel4" style="flex:1;padding:12px;border-radius:10px"><option value="">1️⃣ Paso 1 - Partida 4 dígitos</option></select>
-    <select id="sel6" style="flex:1;padding:12px;border-radius:10px"><option value="">2️⃣ Paso 2 - Subpartida 6 dígitos</option></select>
-    <select id="sel8" style="flex:1;padding:12px;border-radius:10px"><option value="">3️⃣ Paso 3 - Código 8 dígitos</option></select>
-  </div>
+<!-- ========== CREAR CUENTA ========== -->
+<div id="register" class="card hidden">
+<h2>Crear Cuenta</h2>
+<label>Nombre</label><input id="rNombre" placeholder="Nombre completo">
+<label>Nro. Teléfono</label><input id="rTel" placeholder="+56 9...">
+<label>Email</label><input id="rEmail" type="email">
+<label>País</label><select id="rPais"><option>Chile</option><option>Perú</option><option>Argentina</option><option>Colombia</option><option>México</option><option>Otro</option></select>
+<label>Rubro o Giro Comercial</label><input id="rRubro" placeholder="Ej: Importadora de alimentos">
+<label>Crear Usuario</label><input id="rUser" placeholder="Ej: camila.aguirre">
+<label>Crear Contraseña</label><input id="rPass" type="password">
+<label>Pregunta de Seguridad</label><select id="rPreg"><option>¿Nombre de tu primera mascota?</option><option>¿Ciudad donde naciste?</option><option>¿Nombre de tu colegio?</option></select>
+<label>Respuesta de Seguridad</label><input id="rResp">
+<button onclick="registrar()">Crear mi cuenta</button>
+<div class="link" onclick="show('login')">Ya tengo cuenta - Iniciar Sesión</div>
+</div>
 
-  <div id="resultadoArancel" style="margin-top:20px;padding:20px;background:#f0fdf4;border-radius:12px;display:none"></div>
-  <p id="cargandoArancel" style="margin-top:10px">Cargando Arancel 2023...</p>
-</section>
+<!-- ========== OLVIDO ========== -->
+<div id="forgot" class="card hidden">
+<h2>Recuperar Contraseña</h2>
+<button class="sec" onclick="show('forgotPreg')">1. Con Pregunta de Seguridad</button>
+<button class="sec" onclick="show('forgotMail')">2. Reenviar correo de confirmación</button>
+<div class="link" onclick="show('login')">Volver</div>
+</div>
+<div id="forgotPreg" class="card hidden">
+<h2>Pregunta de Seguridad</h2>
+<label>Usuario o Correo</label><input id="fUser">
+<label>Tu Pregunta</label><select id="fPreg"><option>¿Nombre de tu primera mascota?</option><option>¿Ciudad donde naciste?</option><option>¿Nombre de tu colegio?</option></select>
+<label>Respuesta</label><input id="fResp">
+<label>Nueva Contraseña</label><input id="fNewPass" type="password">
+<button onclick="recuperarPreg()">Cambiar contraseña</button>
+<div class="link" onclick="show('forgot')">Volver</div>
+</div>
+<div id="forgotMail" class="card hidden">
+<h2>Reenviar Correo</h2>
+<label>Correo con el que creaste tu cuenta</label><input id="fMail" type="email">
+<button onclick="alert('Correo enviado a '+fMail.value+' (demo)');show('login')">Enviar correo de confirmación</button>
+<div class="link" onclick="show('forgot')">Volver</div>
+</div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<!-- ========== MENU ========== -->
+<div id="menu" class="hidden">
+<div class="card"><h2 id="bienvenida">¡Hola!</h2><p class="small">Elige tu opción:</p></div>
+<div class="menuBtn" onclick="show('comex')">Asesoría Comex<span>Normativa • Clasificación • Tratados • Valoración</span></div>
+<div class="menuBtn" onclick="show('tec')">Consulta Técnica<span>Importaciones • Exportaciones</span></div>
+<div class="menuBtn" onclick="show('cotiz')">Cotización Servicios<span>Agencia • Flete Inter • Flete Nacional • Seguro • Almacenaje</span></div>
+<div class="menuBtn" onclick="show('socios')">Socios Logísticos<span>Flete Inter • Seguro • Flete Nacional • Bodegas</span></div>
+<div class="menuBtn" onclick="show('transp')">Transportes Nacionales<span>Empresas • Disponibilidad • Flete Urgencias</span></div>
+<button class="sec" onclick="show('login')">Cerrar Sesión</button>
+</div>
+
+<!-- ========== ASESORIA COMEX MENU ========== -->
+<div id="comex" class="hidden"><div class="card"><h2>Asesoría Comex</h2>
+<button class="sec" onclick="show('normativa')">Normativa Aduanera</button>
+<button class="sec" onclick="show('clasif')">Clasificación Arancelaria</button>
+<button class="sec" onclick="show('tratados')">Tratados Comerciales</button>
+<button class="sec" onclick="show('valoracion')">Valoración Aduanera</button>
+<button onclick="show('menu')">⬅ Volver al Menú</button></div></div>
+
+<!-- NORMATIVA -->
+<div id="normativa" class="card hidden"><h2>Normativa Aduanera</h2>
+<h3>Preguntas Frecuentes</h3>
+<button class="sec" onclick="alert('1. Qué mercancías se pueden importar: Todas las que no estén prohibidas, cumpliendo requisitos sanitarios y aduaneros.')">1. Qué mercancías se pueden importar</button>
+<button class="sec" onclick="alert('2. Impuestos importación: Derecho Ad Valorem 6% + IVA 19% sobre Valor CIF.')">2. Cuáles son los impuestos que se aplican a una Importación</button>
+<button class="sec" onclick="alert('Pregunta 3 - espacio para agregar')">3. (Espacio para agregar)</button>
+<button class="sec" onclick="alert('Pregunta 4 - espacio para agregar')">4. (Espacio para agregar)</button>
+<h3>Ingrese su Consulta</h3><label>Describa la Consulta</label><textarea id="consultaNorm" placeholder="Escribe tu consulta..."></textarea>
+<button class="green" onclick="alert('Consulta enviada: '+consultaNorm.value)">Enviar Consulta</button>
+<button onclick="show('comex')">⬅ Volver</button></div>
+
+<!-- CLASIFICACION -->
+<div id="clasif" class="card hidden"><h2>Clasificación Arancelaria</h2>
+<h3>Ingresar Partida Arancelaria</h3>
+<div class="row"><div><label>4 Dígitos</label><input id="p4" placeholder="0000"></div><div><label>6 Dígitos</label><input id="p6" placeholder="000000"></div><div><label>8 Dígitos</label><input id="p8" placeholder="00000000"></div></div>
+<label>Indicar con punto Ej: 0000.0000</label><input id="pPunto" placeholder="0000.0000">
+<h3>Ingresar Nombre de las Mercancías</h3><input id="nomMerc" placeholder="Ej: Zapatillas">
+<button onclick="resPartida.classList.remove('hidden');resPartida.innerHTML='<b>Mercancía:</b> '+(nomMerc.value||'')+'<br><b>Partida:</b> '+(pPunto.value||p4.value)+'<br>Resultado: Revisar en arancel (demo).'">Buscar Partida Arancelaria</button>
+<div id="resPartida" class="result hidden"></div>
+<button onclick="show('comex')">⬅ Volver</button></div>
+
+<!-- TRATADOS -->
+<div id="tratados" class="card hidden"><h2>Tratados Comerciales</h2>
+<label>Indique País</label><select id="tPais"><option>Chile</option><option>China</option><option>EE.UU.</option><option>Unión Europea</option><option>Brasil</option><option>México</option></select>
+<h3>Ingrese Partida Arancelaria</h3>
+<div class="row"><div><label>4 Dígitos</label><input id="t4"></div><div><label>6 Dígitos</label><input id="t6"></div><div><label>8 Dígitos</label><input id="t8"></div></div>
+<label>Indicar con punto Ej: 0000.0000</label><input id="tPunto">
+<label>Tratado o Acuerdo Comercial</label><input id="tTratado" placeholder="Ej: TLC Chile - China">
+<button onclick="resTratado.classList.remove('hidden');resTratado.innerHTML='<b>País:</b> '+tPais.value+'<br><b>Partida:</b> '+(tPunto.value||t4.value)+'<br><b>Tratado:</b> '+tTratado.value+'<br>Resultado demo: Ver acuerdo vigente.'">Consultar Tratado</button>
+<div id="resTratado" class="result hidden"></div>
+<button onclick="show('comex')">⬅ Volver</button></div>
+
+<!-- VALORACION -->
+<div id="valoracion" class="card hidden"><h2>Valoración Aduanera</h2>
+<label>Divisa de Transacción / Moneda</label><select id="vMoneda"><option>USD - Dólar</option><option>EUR - Euro</option><option>CLP - Peso Chileno</option></select>
+<label>Cláusula de Compra / Incoterms</label><select id="vIncoterm"><option>FOB</option><option>CIF</option><option>EXW</option><option>DDP</option><option>CFR</option></select>
+<label>Valor Merc. Según Cláusula</label><input id="vValor" type="number" placeholder="10000">
+<h3>Conformación Valor Aduanero</h3>
+<div class="row"><div><label>Valor Mercancías</label><input id="cMerc" type="number"></div><div><label>Moneda</label><input value="USD"></div></div>
+<div class="row"><div><label>Gastos</label><input id="cGastos" type="number"></div><div><label>Moneda</label><input value="USD"></div></div>
+<div class="row"><div><label>FOB</label><input id="cFob" type="number"></div><div><label>Moneda</label><input value="USD"></div></div>
+<div class="row"><div><label>FLETE</label><input id="cFlete" type="number"></div><div><label>Moneda</label><input value="USD"></div></div>
+<div class="row"><div><label>SEGURO</label><input id="cSeguro" type="number"></div><div><label>Moneda</label><input value="USD"></div></div>
+<div class="row"><div><label>CIF</label><input id="cCif" readonly></div><div><label>Moneda</label><input value="USD"></div></div>
+<label>Paridad Moneda</label><input id="cParidad" type="number" value="950">
+<label>Valor según cláusula</label><input id="cSegun" readonly>
+<button class="green" onclick="calcularCIF()">Calcular CIF / Valor Aduanero</button>
+<div id="resCIF" class="result hidden"></div>
+<button onclick="show('comex')">⬅ Volver</button></div>
+
+<!-- ========== CONSULTAS TECNICAS ========== -->
+<div id="tec" class="hidden"><div class="card"><h2>Consulta Técnica</h2>
+<button class="sec" onclick="show('tecImp')">Importaciones</button>
+<button class="sec" onclick="show('tecExp')">Exportaciones</button>
+<button onclick="show('menu')">⬅ Volver al Menú</button></div></div>
+<div id="tecImp" class="card hidden"><h2>Consulta Técnica - Importaciones</h2>
+<label>Ingrese su Consulta</label><textarea id="qImp" placeholder="Describe tu consulta de importación..."></textarea>
+<button class="green" onclick="alert('Consulta Importación enviada: '+qImp.value)">Enviar Consulta Importación</button>
+<button onclick="show('tec')">⬅ Volver</button></div>
+<div id="tecExp" class="card hidden"><h2>Consulta Técnica - Exportaciones</h2>
+<label>Ingrese su Consulta</label><textarea id="qExp" placeholder="Describe tu consulta de exportación..."></textarea>
+<button class="green" onclick="alert('Consulta Exportación enviada: '+qExp.value)">Enviar Consulta Exportación</button>
+<button onclick="show('tec')">⬅ Volver</button></div>
+
+<!-- ========== COTIZACION ========== -->
+<div id="cotiz" class="hidden"><div class="card"><h2>Cotización Servicios</h2>
+<button class="sec" onclick="show('cAgencia')">Costos Agencia de Aduanas</button>
+<button class="sec" onclick="show('cFleteInter')">Costos Flete Internacional</button>
+<button class="sec" onclick="show('cFleteNac')">Costos Flete Nacional</button>
+<button class="sec" onclick="show('cSeguro')">Costos Seguro de Carga</button>
+<button class="sec" onclick="show('cAlmacen')">Costos de Almacenaje</button>
+<button onclick="show('menu')">⬅ Volver al Menú</button></div></div>
+
+<!-- AGENCIA -->
+<div id="cAgencia" class="card hidden"><h2>Costos Agencia de Aduanas</h2>
+<label>Indique Valor Mercancías</label><input id="aValor" type="number" placeholder="Ej: 10000">
+<label>Tipo de Mercancías</label><input id="aTipo" placeholder="Ej: Electrónica">
+<label>Moneda Compra</label><select id="aMoneda"><option>USD</option><option>EUR</option><option>CLP</option></select>
+<label>Cláusula de Compra / Incoterms</label><select id="aIncoterm"><option>FOB</option><option>CIF</option><option>EXW</option><option>DDP</option></select>
+<h3>Detalle:</h3>
+<label>Honorarios</label><input id="aHonor" type="number" placeholder="USD">
+<label>Gastos Agencia</label><input id="aGastos" type="number">
+<label>Transmisión Electrónica en USD</label><input id="aTransUSD" type="number">
+<label>Transmisión Electrónica en $</label><input id="aTransCLP" type="number">
+<button class="green" onclick="resAgencia.classList.remove('hidden');resAgencia.innerHTML='<b>Total Estimado Agencia:</b> '+(+aHonor.value+ +aGastos.value+ +aTransUSD.value)+' USD<br>Transmisión: '+aTransCLP.value+' CLP<br>Valor Merc: '+aValor.value+' '+aMoneda.value+' '+aIncoterm.value">Calcular Cotización Agencia</button>
+<div id="resAgencia" class="result hidden"></div>
+<button onclick="show('cotiz')">⬅ Volver</button></div>
+
+<!-- FLETE INTER -->
+<div id="cFleteInter" class="card hidden"><h2>Costos Flete Internacional</h2>
+<label>Tipo de Mercancías</label><input id="fiTipo"><label>País de Embarque</label><input id="fiPais" placeholder="Ej: China">
+<label>Puerto Embarque</label><input id="fiPuerto" placeholder="Ej: Shanghai">
+<label>Vía de Transporte</label><select id="fiVia"><option>Marítimo</option><option>Aéreo</option><option>Terrestre</option></select>
+<label>Tipo de Bultos</label><input id="fiBultos" placeholder="Ej: 10 cajas">
+<label>Kilos Brutos</label><input id="fiKilos" type="number">
+<label>M3</label><input id="fiM3" type="number">
+<label>Cláusula de Compra / Incoterms</label><select id="fiIncoterm"><option>FOB</option><option>CIF</option><option>EXW</option></select>
+<label>Dirección de Retiro</label><input id="fiRetiro" placeholder="Dirección completa">
+<h3>Detalle:</h3><label>Valor Flete</label><input id="fiValor" type="number">
+<label>Gastos en País de Destino</label><input id="fiGastos" type="number">
+<label>Canje</label><input id="fiCanje" type="number"><label>Modificación</label><input id="fiMod" type="number"><label>Desconsolidación</label><input id="fiDescon" type="number">
+<button class="green" onclick="resFi.classList.remove('hidden');resFi.innerHTML='<b>Flete:</b> '+fiValor.value+'<br><b>Gastos Destino:</b> '+fiGastos.value+'<br><b>Canje:</b> '+fiCanje.value+' + <b>Modif:</b> '+fiMod.value+' + <b>Descon:</b> '+fiDescon.value+'<br><b>Total:</b> '+(+fiValor.value+ +fiGastos.value+ +fiCanje.value+ +fiMod.value+ +fiDescon.value)">Calcular Flete Internacional</button>
+<div id="resFi" class="result hidden"></div><button onclick="show('cotiz')">⬅ Volver</button></div>
+
+<!-- FLETE NAC -->
+<div id="cFleteNac" class="card hidden"><h2>Costos Flete Nacional</h2>
+<label>Aduana Retiro</label><select id="fnAduana"><option>San Antonio</option><option>Valparaíso</option><option>Santiago</option><option>Iquique</option></select>
+<label>Tipo de Mercancías</label><input id="fnTipo"><label>Tipo de Bultos</label><input id="fnBultos">
+<label>Kilos Brutos</label><input id="fnKilos" type="number"><label>M3</label><input id="fnM3" type="number">
+<label>Dirección de Entrega</label><input id="fnEntrega">
+<label>Cuadrilla de Peonetas</label><select id="fnPeonetas"><option>Sí</option><option>No</option></select>
+<label>Servicio Grúa Descarga</label><select id="fnGrua"><option>Sí</option><option>No</option></select>
+<label>Sobreestadía Descarga</label><input id="fnSobre" placeholder="Horas">
+<h3>Detalle:</h3><label>Valor Flete</label><input id="fnValor" type="number">
+<label>Horas Libres descarga</label><input id="fnHoras" type="number" placeholder="Ej: 2 horas">
+<label>Costos Adicionales: Sobreestadía</label><input id="fnCostSobre" type="number">
+<label>Peonetas</label><input id="fnCostPeon" type="number"><label>Servicio de Grúas</label><input id="fnCostGrua" type="number"><label>Flete Falso</label><input id="fnFalso" type="number">
+<button class="green" onclick="resFn.classList.remove('hidden');resFn.innerHTML='<b>Valor Flete:</b> '+fnValor.value+'<br><b>Adicionales:</b> Sobre '+fnCostSobre.value+' + Peonetas '+fnCostPeon.value+' + Grúa '+fnCostGrua.value+' + Falso '+fnFalso.value+'<br><b>Total:</b> '+(+fnValor.value+ +fnCostSobre.value+ +fnCostPeon.value+ +fnCostGrua.value+ +fnFalso.value)">Calcular Flete Nacional</button>
+<div id="resFn" class="result hidden"></div><button onclick="show('cotiz')">⬅ Volver</button></div>
+
+<!-- SEGURO -->
+<div id="cSeguro" class="card hidden"><h2>Costos Seguro de Carga</h2>
+<label>Valor Mercancías</label><input id="sValor" type="number"><label>Tipo de Mercancías</label><input id="sTipo">
+<label>Vía de Transporte</label><select id="sVia"><option>Marítimo</option><option>Aéreo</option><option>Terrestre</option></select>
+<label>País de Origen</label><input id="sPais"><label>Puerto Descarga</label><input id="sPuerto"><label>Tipo de Bultos</label><input id="sBultos">
+<h3>Detalle:</h3><label>Valor Asegurado</label><input id="sAseg" type="number"><label>Valor Prima de Seguros</label><input id="sPrima" type="number">
+<button class="green" onclick="resSeg.classList.remove('hidden');resSeg.innerHTML='<b>Valor Asegurado:</b> '+sAseg.value+'<br><b>Prima:</b> '+sPrima.value">Calcular Seguro</button>
+<div id="resSeg" class="result hidden"></div><button onclick="show('cotiz')">⬅ Volver</button></div>
+
+<!-- ALMACENAJE -->
+<div id="cAlmacen" class="card hidden"><h2>Costos de Almacenaje</h2>
+<label>Aduana Retiro</label><select id="alAduana"><option>San Antonio</option><option>Valparaíso</option><option>Santiago</option></select>
+<label>Valor CIF</label><input id="alCif" type="number"><label>Kilos Brutos</label><input id="alKilos" type="number"><label>M3</label><input id="alM3" type="number">
+<label>Fecha de Arribo</label><input id="alArribo" type="date"><label>Fecha de Retiro</label><input id="alRetiro" type="date">
+<h3>Detalle:</h3><label>Valor Neto</label><input id="alNeto" type="number">
+<label>IVA 19%</label><input id="alIva" type="number" readonly><label>Total Costo</label><input id="alTotal" type="number" readonly>
+<button class="green" onclick="alIva.value=(+alNeto.value*0.19).toFixed(0);alTotal.value=(+alNeto.value*1.19).toFixed(0);resAlm.classList.remove('hidden');resAlm.innerHTML='<b>Neto:</b> '+alNeto.value+'<br><b>IVA 19%:</b> '+alIva.value+'<br><b>Total:</b> '+alTotal.value">Calcular Almacenaje</button>
+<div id="resAlm" class="result hidden"></div><button onclick="show('cotiz')">⬅ Volver</button></div>
+
+<!-- ========== SOCIOS ========== -->
+<div id="socios" class="hidden"><div class="card"><h2>Socios Logísticos</h2>
+<button class="sec" onclick="show('socDetalle')">Flete Internacional</button>
+<button class="sec" onclick="show('socDetalle')">Seguros de Carga</button>
+<button class="sec" onclick="show('socDetalle')">Flete Nacional</button>
+<button class="sec" onclick="show('socDetalle')">Bodegas Almacenamiento</button>
+<button onclick="show('menu')">⬅ Volver al Menú</button></div></div>
+<div id="socDetalle" class="card hidden"><h2>Detalle Socio Logístico</h2>
+<label>Nombre Empresa</label><input id="soNom" placeholder="Nombre empresa socia">
+<label>Contacto</label><input id="soCon" placeholder="Nombre contacto / teléfono / correo">
+<button class="green" onclick="alert('Socio guardado: '+soNom.value+' - '+soCon.value)">Guardar Socio</button>
+<button onclick="show('socios')">⬅ Volver</button></div>
+
+<!-- ========== TRANSPORTES ========== -->
+<div id="transp" class="card hidden"><h2>Transportes Nacionales</h2>
+<label>Nombre Empresa</label><input id="trNom"><label>Rut</label><input id="trRut" placeholder="12.345.678-9">
+<label>Contacto Directo</label><input id="trContacto"><label>Teléfono</label><input id="trTel"><label>Correo</label><input id="trMail" type="email">
+<h3>Ingresa Disponibilidad</h3>
+<label>Aduana</label><select id="trAduana"><option>San Antonio</option><option>Valparaíso</option><option>Santiago</option><option>Iquique</option></select>
+<label>Horario</label><input id="trHorario" placeholder="Ej: 08:00 - 18:00">
+<div class="row"><div><label>M3 Libres</label><input id="trM3" type="number"></div><div><label>KB Libres</label><input id="trKb" type="number"></div></div>
+<label>Tipo Vehículo</label><select id="trVeh"><option>Camión 3/4</option><option>Camión 10 Ton</option><option>Rampla</option><option>Camioneta</option></select>
+<h3>Costos Flete Urgencias</h3><label>Valor Flete Urgencia</label><input id="trUrg" type="number" placeholder="$">
+<button class="green" onclick="resTr.classList.remove('hidden');resTr.innerHTML='<b>'+trNom.value+' ('+trRut.value+')</b><br>Contacto: '+trContacto.value+' - '+trTel.value+'<br>Aduana: '+trAduana.value+' Horario: '+trHorario.value+'<br>M3 Libres: '+trM3.value+' KB Libres: '+trKb.value+' Vehículo: '+trVeh.value+'<br><b>Flete Urgencia: $'+trUrg.value">Guardar Transporte / Ver Disponibilidad</button>
+<div id="resTr" class="result hidden"></div>
+<button onclick="show('menu')">⬅ Volver al Menú</button></div>
+
+</div>
 <script>
-let DATOS=[];
-async function cargarArancel(){
-  const res = await fetch('ARANCEL_2023.xlsx');
-  const buf = await res.arrayBuffer();
-  const wb = XLSX.read(buf,{type:'array'});
-  const ws = wb.Sheets[wb.SheetNames[0]];
-  const filas = XLSX.utils.sheet_to_json(ws,{header:1});
-  // Col 0=Partida 4 dig, Col 1=Codigo, Col 2=Descripcion, Col 3=Unidad, Col 4=Adv
-  filas.forEach(f=>{
-    let partida=(f[0]||'').toString().trim();
-    let codigo=(f[1]||'').toString().trim();
-    let glosa=(f[2]||'').toString().trim();
-    if(/^\d{2}\.\d{2}$/.test(partida) && glosa){
-      DATOS.push({tipo:'4', codigo:partida.replace('.',''), muestra:partida, desc:glosa});
-    }
-    if(/^\d{4}\.\d{4}$/.test(codigo) && glosa){
-      DATOS.push({tipo:'8', codigo:codigo.replace('.',''), muestra:codigo, desc:glosa, unidad:f[3]||'', adv:f[4]||''});
-    }
-    if(/^\d{4}\.\d{2}$/.test(codigo) && glosa){
-      DATOS.push({tipo:'6', codigo:codigo.replace('.',''), muestra:codigo, desc:glosa});
-    }
-  });
-  llenar4();
-  document.getElementById('cargandoArancel').style.display='none';
+function show(id){
+['login','register','forgot','forgotPreg','forgotMail','menu','comex','normativa','clasif','tratados','valoracion','tec','tecImp','tecExp','cotiz','cAgencia','cFleteInter','cFleteNac','cSeguro','cAlmacen','socios','socDetalle','transp'].forEach(x=>{let e=document.getElementById(x); if(e) e.classList.add('hidden')});
+document.getElementById(id).classList.remove('hidden'); window.scrollTo(0,0);
 }
-function llenar4(){
-  let sel=document.getElementById('sel4');
-  DATOS.filter(d=>d.tipo=='4').forEach(d=>{
-    let o=document.createElement('option'); o.value=d.codigo; o.textContent=d.muestra+' - '+d.desc;
-    sel.appendChild(o);
-  });
+function getUsers(){return JSON.parse(localStorage.getItem('c24_users')||'[]')}
+function saveUsers(u){localStorage.setItem('c24_users',JSON.stringify(u))}
+function registrar(){
+let u={nombre:rNombre.value,tel:rTel.value,email:rEmail.value,pais:rPais.value,rubro:rRubro.value,user:rUser.value,pass:rPass.value,preg:rPreg.value,resp:rResp.value};
+if(!u.nombre||!u.email||!u.user||!u.pass){alert('Faltan: Nombre, Email, Usuario y Contraseña');return}
+let users=getUsers(); users.push(u); saveUsers(users); alert('¡Cuenta creada, '+u.nombre+'! Ahora inicia sesión.'); show('login');
 }
-document.getElementById('sel4').addEventListener('change',e=>{
-  let base=e.target.value;
-  let sel6=document.getElementById('sel6'); sel6.innerHTML='<option value="">2️⃣ Paso 2 - Subpartida 6 dígitos</option>';
-  let sel8=document.getElementById('sel8'); sel8.innerHTML='<option value="">3️⃣ Paso 3 - Código 8 dígitos</option>';
-  DATOS.filter(d=>d.tipo=='6' && d.codigo.startsWith(base)).forEach(d=>{
-    let o=document.createElement('option'); o.value=d.codigo; o.textContent=d.muestra+' - '+d.desc; sel6.appendChild(o);
-  });
-  // Si no hay nivel 6, mostrar directo los de 8
-  if(sel6.options.length<=1){
-    DATOS.filter(d=>d.tipo=='8' && d.codigo.startsWith(base)).forEach(d=>{
-      let o=document.createElement('option'); o.value=d.codigo; o.textContent=d.muestra+' - '+d.desc; sel8.appendChild(o);
-    });
-  }
-});
-document.getElementById('sel6').addEventListener('change',e=>{
-  let base=e.target.value;
-  let sel8=document.getElementById('sel8'); sel8.innerHTML='<option value="">3️⃣ Paso 3 - Código 8 dígitos</option>';
-  DATOS.filter(d=>d.tipo=='8' && d.codigo.startsWith(base)).forEach(d=>{
-    let o=document.createElement('option'); o.value=d.codigo; o.textContent=d.muestra+' - '+d.desc; sel8.appendChild(o);
-  });
-});
-document.getElementById('sel8').addEventListener('change',e=>{
-  let d=DATOS.find(x=>x.tipo=='8' && x.codigo==e.target.value);
-  if(!d) return;
-  let div=document.getElementById('resultadoArancel');
-  div.style.display='block';
-  div.innerHTML='<b>✅ Código completo: '+d.muestra+'</b><br>'+d.desc+'<br><b>Unidad:</b> '+(d.unidad||'-')+' | <b>Ad-Valorem:</b> '+(d.adv||'6')+'%<br><br><a href="https://wa.me/569XXXXXXXX?text=Hola C24X7, quiero clasificar mi producto '+d.muestra+' - '+d.desc+'" style="background:#25D366;color:white;padding:12px 18px;border-radius:10px;text-decoration:none;display:inline-block">Consultar este código por WhatsApp</a>';
-});
-document.getElementById('buscadorArancel').addEventListener('input',e=>{
-  let q=e.target.value.toLowerCase();
-  if(q.length<3) return;
-  let found=DATOS.filter(d=>d.desc.toLowerCase().includes(q) || d.codigo.includes(q.replace('.',''))).slice(0,20);
-  let div=document.getElementById('resultadoArancel');
-  if(found.length){
-    div.style.display='block';
-    div.innerHTML='<b>Resultados para "'+e.target.value+'":</b><br>'+found.map(f=>f.muestra+' - '+f.desc).join('<br>');
-  }
-});
-cargarArancel();
+function login(){
+let v=loginUser.value.trim(), p=loginPass.value;
+let u=getUsers().find(x=>(x.user===v||x.email===v)&&x.pass===p);
+if(!u){loginMsg.classList.remove('hidden');loginMsg.innerHTML='❌ Usuario/Correo o contraseña incorrectos.';return}
+bienvenida.innerText='¡Hola, '+u.nombre+'!'; show('menu');
+}
+function recuperarPreg(){
+let users=getUsers(); let u=users.find(x=>x.user===fUser.value||x.email===fUser.value);
+if(!u){alert('No encontramos esa cuenta');return}
+if(u.resp!==fResp.value){alert('Respuesta incorrecta');return}
+u.pass=fNewPass.value; saveUsers(users); alert('¡Contraseña cambiada!'); show('login');
+}
+function calcularCIF(){
+let fob=+cFob.value||0, flete=+cFlete.value||0, seg=+cSeguro.value||0; let cif=fob+flete+seg; cCif.value=cif;
+let par=+cParidad.value||1; cSegun.value=(cif*par).toFixed(0)+' CLP';
+resCIF.classList.remove('hidden'); resCIF.innerHTML='<b>FOB:</b> '+fob+' + <b>FLETE:</b> '+flete+' + <b>SEGURO:</b> '+seg+' = <b>CIF: '+cif+' USD</b><br><b>Valor Aduanero:</b> '+(cif*par)+' CLP';
+}
 </script>
+</body>
+</html>
